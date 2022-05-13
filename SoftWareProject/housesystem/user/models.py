@@ -8,7 +8,7 @@ from django.db import models
 
 
     # 会员类
-class members(models.Model):
+class member(models.Model):
     id = models.AutoField(primary_key=True)#写了防报错，不一定要保留
 
 

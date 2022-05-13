@@ -19,7 +19,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', views.index), #主界面网站
-    path('user/', include('user.urls', 'user')), #和用户有关的网址，注册登录个人信息等
+    path('index/', include(('index.urls', 'index'))), #主界面网站
+    path('user/', include(('user.urls', 'user'))) #和用户有关的网址，注册登录个人信息等
 ]
 
