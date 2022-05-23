@@ -1,8 +1,11 @@
 from django.contrib import admin
-from .models import member,manager
+from .models import Contract,Order,User,Work,UserHouse
 
 
 # Register your models here.
 
-admin.site.register(member)
-admin.site.register(manager)
+admin.site.register(Contract)
+admin.site.register(Order)
+admin.site.register(User)
+admin.site.register(Work)
+admin.site.register(UserHouse)
