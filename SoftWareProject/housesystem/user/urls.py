@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import *
 
+
+'''
 urlpatterns = [
     path('register', register),
     path('login',login),
@@ -19,3 +21,4 @@ urlpatterns = [
     path('managercenter/dealrepair',dealRepair),
     path('managercenter/manageroom',manageRoom),
 ]
+'''

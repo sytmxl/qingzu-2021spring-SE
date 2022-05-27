@@ -31,18 +31,22 @@ class User(models.Model):
     PicID = models.CharField(max_length=255,null=True)
     ID = models.CharField(max_length=18,null=True)
     Phone = models.CharField(max_length=11,null=True)
-    Status = models.CharField(max_length=1,null=True)
+    Status = models.CharField(max_length=1,null=True)  # Y代表用户，G代表管理员，S代表师傅
+    Login = models.BooleanField(null=False,default=False)
+    Introduction = models.TextField(null=True)
 
 class Work(models.Model):
     WorkID = models.IntegerField(primary_key=True,null=False)
-    Datatime = models.DateTimeField(null=False)
+    Datetime = models.DateTimeField(null=False)
     HouseID = models.IntegerField(null=False)
-    Description = models.CharField(max_length=255,null=False)
+    Description = models.TextField(null=False)
     UserID = models.IntegerField(null=False)
     WorkerID = models.IntegerField(null=False)
     Comment = models.CharField(max_length=255,null=True)
     Mark = models.IntegerField(null=True)
+    Status = models.BooleanField(null=False,default=False)
 
 class UserHouse(models.Model):
-    UserID = models.ForeignKey(User,on_delete=models.CASCADE)
-    HouseID = models.ForeignKey(House,on_delete=models.CASCADE)
+    UserID = models.IntegerField(null=False)
+    HouseID = models.IntegerField(null=False)
+    Mark = models.IntegerField(null=True)
