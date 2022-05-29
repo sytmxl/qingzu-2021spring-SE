@@ -12,7 +12,7 @@ def Register(request):
         username = querylist.get('username')  # 获取请求数据
         password_1 = querylist.get('password_1')
         password_2 = querylist.get('password_2')
-        phone = querylist.get('phone')
+        #phone = querylist.get('phone')
         email = querylist.get('email')
         if(re.match("^[A-Za-z0-9]+$",username)==None): # 任意长度的字符和数字组合
             return JsonResponse({'errornumber': 2, 'message': "用户名格式错误:只能输入字母和数字的组合"})
@@ -22,26 +22,16 @@ def Register(request):
             return JsonResponse({'errornumber': 4, 'message': "密码格式错误：只能输入字母和数字的组合"})
         elif(password_1 != password_2):
             return JsonResponse({'errornumber': 5, 'message': "两次输入的密码不一致"})
-        elif(re.match("^\d{11}$",phone)==None):   # 任意长度的字符和数字组合
-            return JsonResponse({'errornumber': 6, 'message': "手机号格式错误"})
+        #elif(re.match("^\d{11}$",phone)==None):   # 任意长度的字符和数字组合
+        #    return JsonResponse({'errornumber': 6, 'message': "手机号格式错误"})
         elif(re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$",email)==None): #// 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
             return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
         else:
-            new_user = User(Username=username,Password=password_1,Phone=phone,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
+            new_user = User(Username=username,Password=password_1,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
             new_user.save()
             return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID})
     else:
         return JsonResponse({'errornumber': 1, 'message': "请求方式错误"})
-
-'''
-完善个人资料：
-输入：个人详细信息
-成功跳转：主界面
-失败给出提示
-'''
-@csrf_exempt
-def infoFill(request):
-    return JsonResponse()
 
 @csrf_exempt
 def Login(request):
@@ -68,71 +58,76 @@ def Login(request):
             return JsonResponse({'errornumber': 4, 'message': "密码错误，请重试"})
         elif(loginuser.Password==password):
             if(loginuser.Status=='Y'):
-                return JsonResponse({'error': 0, 'message': "欢迎用户"})
+                return JsonResponse({'errornumber': 0, 'message': "欢迎用户"})
             elif(loginuser.Status=='G'):
-                return JsonResponse({'error': 1, 'message': "欢迎管理员"})
+                return JsonResponse({'errornumber': 1, 'message': "欢迎管理员"})
             elif(loginuser.Status=='S'):
-                return JsonResponse({'error': 2, 'message': "欢迎师傅"})
+                return JsonResponse({'errornumber': 2, 'message': "欢迎师傅"})
     else:
         return JsonResponse({'error': 5, 'message': "请求方式错误"})
 
-
 @csrf_exempt
-def personalCenter(request):
-    return JsonResponse()
+def user(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        user_id = querylist.get('user_id')
+        user = User.objects.get(UserID=user_id)
+        if function_id == '0':  # 我的订单
+            orderlist = []
+            order = Order.objects.filter(UserID=user_id,Pay=False)
+            for x in order:
+                y = House.objects.get(HouseID=x.HouseID)
+                orderlist.append({
+                    'OrderDate': x.OrderDate.date(),
+                    'OrderID': x.OrderID,
+                    'HouseID': x.HouseID,
+                    'LandlordName': y.LandlordName,
+                    'LandlordPhone': y.LandlordPhone,
+                    'Address': y.Address
+                })
+            return JsonResponse({'orderlist': orderlist})
+        elif function_id == '1':  # 保修投诉
+            orderlist = []
+            order = Order.objects.filter(UserID=user_id)
+            for x in order:
+                y = House.objects.get(HouseID=x.HouseID)
+                orderlist.append({
+                    'OrderDate': x.OrderDate.date(),
+                    'OrderID': x.OrderID,
+                    'HouseID': x.HouseID,
+                    'LandlordName': y.LandlordName,
+                    'LandlordPhone': y.LandlordPhone,
+                    'Address': y.Address
+                })
+            return JsonResponse({'orderlist': orderlist})
+        elif function_id == '2':  # 我的收藏
+            houselist = []
+            for x in UserHouse.objects.filter(UserID=user_id):
+                houselist.append({
+                    'HouseID': x.HouseID
+                })
+            return JsonResponse({'houselist': houselist})
+        elif function_id == '3':  # 个人资料
+            return JsonResponse({'introduction': user.Introduction})
+        elif function_id == '4':  # 主页
 
-@csrf_exempt
-def changeInfo(request):
-    return JsonResponse()
-
-@csrf_exempt
-def refindCode(request):
-    return JsonResponse()
-
-@csrf_exempt
-def changeCode(request):
-    return JsonResponse()
-
-@csrf_exempt
-def cancelUser(request):
-    return JsonResponse()
-
-@csrf_exempt
-def manageOrder(request):
-    return JsonResponse()
-
-@csrf_exempt
-def repairComplaints(request):
-    return JsonResponse()
-
-@csrf_exempt
-def repairComplaints(request):
-    return JsonResponse()
-
-@csrf_exempt
-def collect(request):
-    return JsonResponse()
-
-@csrf_exempt
-def managerCenter(request):
-    return JsonResponse()
-
-@csrf_exempt
-def manageUser(request):
-    return JsonResponse()
-
-@csrf_exempt
-def manageOrder(request):
-    return JsonResponse()
-
-@csrf_exempt
-def manageOrder(request):
-    return JsonResponse()
-
-@csrf_exempt
-def dealRepair(request):
-    return JsonResponse()
-
-@csrf_exempt
-def manageRoom(request):
-    return JsonResponse()
+            return JsonResponse()
+        elif function_id == '5': #详细资料
+            return JsonResponse({'PicID':user.PicID,'Username':user.Username,'Phone':user.Phone,'City':user.City,'Job':user.Job})
+        elif function_id == '6': #修改个人资料
+            user = User.objects.get(UserID=user_id)
+            user.Introduction = querylist.get('introduction')
+            user.save()
+            return JsonResponse({'introduction': user.Introduction})
+        elif function_id == '7': #修改个人资料
+            user = User.objects.get(UserID=user_id)
+            user.PicID = querylist.get('PicID')
+            user.Username = querylist.get('Username')
+            user.Phone = querylist.get('Phone')
+            user.City = querylist.get('City')
+            user.Job = querylist.get('Job')
+            user.save()
+            return JsonResponse({'PicID': user.PicID, 'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job})
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})

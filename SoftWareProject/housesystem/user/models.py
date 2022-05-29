@@ -17,8 +17,8 @@ class Order(models.Model):
     OrderDate = models.DateTimeField(null=False)
     DueDate = models.DateTimeField(null=False)
     Price = models.IntegerField(null=False)
-    Mark = models.IntegerField(null=False)
-    Comment = models.CharField(max_length=50,null=False)
+    Mark = models.IntegerField(null=True)
+    Comment = models.CharField(max_length=50,null=True)
     Pay = models.BooleanField(null=False)
     UserID = models.IntegerField(null=False)
     HouseID = models.IntegerField(null=False)
@@ -33,18 +33,22 @@ class User(models.Model):
     Phone = models.CharField(max_length=11,null=True)
     Status = models.CharField(max_length=1,null=True)  # Y代表用户，G代表管理员，S代表师傅
     Login = models.BooleanField(null=False,default=False)
+    City = models.CharField(max_length=255,null=True)
+    Job = models.CharField(max_length=255,null=True)
     Introduction = models.TextField(null=True)
 
 class Work(models.Model):
     WorkID = models.IntegerField(primary_key=True,null=False)
-    Datetime = models.DateTimeField(null=False)
+    Datetime = models.DateField(null=False)
     HouseID = models.IntegerField(null=False)
     Description = models.TextField(null=False)
     UserID = models.IntegerField(null=False)
-    WorkerID = models.IntegerField(null=False)
+    WorkerID = models.IntegerField(null=True)
     Comment = models.CharField(max_length=255,null=True)
     Mark = models.IntegerField(null=True)
     Status = models.BooleanField(null=False,default=False)
+    Admincomment = models.TextField(null=True)
+    Workercomment = models.TextField(null=True)
 
 class UserHouse(models.Model):
     UserID = models.IntegerField(null=False)

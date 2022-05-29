@@ -21,6 +21,15 @@ import user.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('FirstPage/', index.views.FirstPage), #主界面网站
+    path('search/',index.views.search),
+    path('order/',index.views.order),
+    path('info_order/',index.views.info_order),
+    path('service/',index.views.service),
+    path('info_complain/',index.views.info_complain),
+    path('connect/',index.views.connect),
+    path('collection/',index.views.collection),
+    path('information/',index.views.information),
+    path('user/',user.views.user),
     path('Login/', user.views.Login), #和用户有关的网址，注册登录个人信息等
     path('Register/',user.views.Register)
 ]

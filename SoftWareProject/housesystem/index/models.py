@@ -11,7 +11,7 @@ class Info(models.Model):
 
 class Picture(models.Model):
     PicID = models.IntegerField(primary_key=True,null=False)
-    PicPath = models.CharField(max_length=255,null=False) 由于前端的需要，这部分交给前端存储，后端不再设置文件路径
+    PicPath = models.CharField(max_length=255,null=True)
     HouseID = models.IntegerField(null=True)  #没设置外键
     WorkID = models.IntegerField(null=True)   #没设置外键
 
@@ -27,7 +27,7 @@ class House(models.Model):
     Rent = models.IntegerField(null=True)
     LandlordName = models.CharField(max_length=255,null=True)
     LandlordPhone = models.CharField(max_length=255, null=True)
-    Score = models.IntegerField(null=True,default=0)
+    Mark = models.IntegerField(null=True,default=0)
     City = models.CharField(max_length=255,null=True)
     Introduction = models.TextField(null=True)
     Status = models.BooleanField(null=False,default=False) #标志房屋是否被出租
