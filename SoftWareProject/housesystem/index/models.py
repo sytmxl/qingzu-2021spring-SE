@@ -23,7 +23,7 @@ class House(models.Model):
     Floor = models.CharField(max_length=255,null=True) # 楼层
     Address = models.CharField(max_length=255,null=True)
     Type = models.CharField(max_length=255,null=True) # 类型，如毛坯
-    DateRequirement = models.CharField(max_length=1,null=True)
+    DateRequirement = models.CharField(max_length=1,null=True)# S：短租（short） L：长租 （long） A：都可（all）
     Rent = models.IntegerField(null=True)
     LandlordName = models.CharField(max_length=255,null=True)
     LandlordPhone = models.CharField(max_length=255, null=True)

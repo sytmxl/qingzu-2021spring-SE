@@ -60,6 +60,7 @@ def FirstPage(request): #主界面
             user_id是前端传来的用户id，根据这个id在数据库中获取用户可能喜欢的房源，返回值是房源ID+房源图片ID+房源图片路径（对应数据库中的HouseID，PicID和PicPath）列表的json格式。
             用户收藏的房源存储在user下的UserHouse类中。如有必要的话可以添加一个新的类，里面存储用户浏览的房源，根据此来做推荐算法。
             '''
+
             return JsonResponse()
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
@@ -157,15 +158,46 @@ def search(request): #我要租房
                 return JsonResponse({'errornumber': 1, 'message': "成功登录并收藏！"})#未成功登录的情况暂时由前端处理
         elif function_id == '7': #房源搜索
             house_name = querylist.get('house_name')
-            '''
-            house_name是用户传来的待搜索房源名称，返回值是房源ID+房源图片ID+房源图片路径（对应数据库中的HouseID，PicID和PicPath）的json格式。
-            '''
-            return JsonResponse()
+            houses = House.objects.filter(Housename__contains=house_name)
+            # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
+            houselist = []
+            for house in houses:
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
+                houselist.append({# 询问过前端
+                    'HouseID': house.HouseID,
+                    'Housename': house.Housename,
+                    'Floor': house.Floor,
+                    'Rent': house.Rent,
+                    'Type': house.Type,
+                    'Area': house.Area,
+                    'PicPathList': list(pics)
+                })
+            return JsonResponse({'houselist': houselist})
         elif function_id == '8': #房源筛选
-            '''
-            用户传来的参数可能有很多，见我要租房.png，包括城市，租金等等，返回值是房源ID+房源图片ID+房源图片路径（对应数据库中的HouseID，PicID和PicPath）列表的json格式。
-            '''
-            return JsonResponse()
+            houses = House.objects.filter(# 具体get名称未对接
+                City=querylist.get('city'),
+                Type=querylist.get('type')
+            )
+
+            rent = querylist.get('rent')
+            if rent == 0:
+                houses.filter(rent__lte=1000)
+            if rent == 1:
+                houses.filter(rent__gte=1000).filter(rent__lte=3000)
+            if rent == 2:
+                houses.filter(rent__gte=3000).filter(rent__lte=5000)
+            if rent == 3:
+                houses.filter(rent__gte=5000).filter(rent__lte=10000)
+            if rent == 4:
+                houses.filter(rent__gte=10000)
+
+            rent_time = querylist.get('rent_time')
+            if rent_time == 'S':
+                houses.exclude(DateRequirement='L')
+            if rent_time == 'L':
+                houses.exclude(DateRequirement='S')
+
+            return JsonResponse(list(houses))
         elif function_id == '9': #提交申请
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
