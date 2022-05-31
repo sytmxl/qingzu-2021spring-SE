@@ -163,7 +163,7 @@ def search(request): #我要租房
             houselist = []
             for house in houses:
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
-                houselist.append({# 询问过前端
+                houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
                     'Floor': house.Floor,
@@ -190,12 +190,6 @@ def search(request): #我要租房
                 houses.filter(rent__gte=5000).filter(rent__lte=10000)
             if rent == 4:
                 houses.filter(rent__gte=10000)
-
-            rent_time = querylist.get('rent_time')
-            if rent_time == 'S':
-                houses.exclude(DateRequirement='L')
-            if rent_time == 'L':
-                houses.exclude(DateRequirement='S')
 
             return JsonResponse(list(houses))
         elif function_id == '9': #提交申请
