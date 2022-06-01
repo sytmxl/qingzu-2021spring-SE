@@ -490,10 +490,16 @@ def service(request):
                                  'ComplainText':work.Description})
         elif function_id == '11':#联系师傅/客服
             work_id = querylist.get('work_id')
-            work = Work.objects.get(WorkID=work_id)
-            admin_comment = work.Admincomment
-            worker_comment = work.Workercomment
-            return JsonResponse({'Admincomment':admin_comment,'Workercomment':worker_comment})
+            list = Message.objects.filter(WorkID=work_id)
+            messagelist = []
+            for x in list:
+                messagelist.append({
+                    'errnum':x.Errornumber,
+                    'id':x.UserID,
+                    'text':x.Text,
+                    'name':x.Username
+                })
+            return JsonResponse({'massagelist':messagelist})
         elif function_id == '12':#进入我要报修/投诉界面
             order_id = querylist.get('order_id')
             order = Order.objects.get(OrderID=order_id)
@@ -518,12 +524,21 @@ def service(request):
             house_id = order.HouseID
             description = querylist.get('description')
             picpath = querylist.get('picpath')
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,Phone=user.Phone,Username=user.Username)
             new_work.save()
             work = Work.objects.get(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
             new_picture = Picture(PicPath=picpath, HouseID=house_id, WorkID=work.WorkID)
             new_picture.save()
             return JsonResponse({'errornumber': 1, 'message': "提交投诉/报修成功！"})
+        elif function_id == '14': #提交留言
+            work_id = querylist.get('work_id')
+            Errornumber = querylist.get('errornumber')
+            UserID = querylist.get('id')
+            Text = querylist.get('text')
+            Username = querylist.get('name')
+            new_message = Message(Errornumber=Errornumber,UserID = UserID,Text = Text,Username = Username)
+            new_message.save()
+            return JsonResponse({'errornumber': 1, 'message': "留言成功！"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -624,6 +639,8 @@ def connect(request):
         elif function_id == '4':  # 主页
 
             return JsonResponse()
+
+
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -777,3 +794,4 @@ def information(request):
             return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+

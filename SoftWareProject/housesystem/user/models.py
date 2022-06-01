@@ -47,10 +47,9 @@ class Work(models.Model):
     Comment = models.CharField(max_length=255,null=True)
     Mark = models.IntegerField(null=True)
     Status = models.BooleanField(null=False,default=False)
-    Admincomment = models.TextField(null=True)
-    Workercomment = models.TextField(null=True)
 
 class UserHouse(models.Model):
     UserID = models.IntegerField(null=False)
     HouseID = models.IntegerField(null=False)
     Mark = models.IntegerField(null=True)
+
