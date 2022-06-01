@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import re
 from .models import *
+from index.models import *
 
 @csrf_exempt
 def Register(request):
@@ -131,3 +132,173 @@ def user(request):
             return JsonResponse({'PicID': user.PicID, 'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+def RepairMan_SelfInfo(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        user_id = querylist.get('user_id')
+        user = User.objects.get(UserID=user_id)
+        if function_id == 1: #修改头像（这里可能要修改）
+            new_picture = Picture(PicPath = querylist.get('PicPath'))
+            new_picture.save()
+            return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
+        elif function_id == 2: #修改电话
+            phone = querylist.get('phone')
+            if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
+                return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
+            else:
+                return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
+        elif function_id == 3: #修改密码
+            original_password = querylist.get('original_password')
+            new_password1 = querylist.get('new_password1')
+            new_password2 = querylist.get('new_password2')
+            if(original_password != user.Password):
+                return JsonResponse({'errornumber': 4, 'message': "密码错误"})
+            elif(new_password1 != new_password2):
+                return JsonResponse({'errornumber': 5, 'message': "两次输入的密码不一致"})
+            elif(re.match("^[A-Za-z0-9]+$",new_password1)==None):
+                return JsonResponse({'errornumber': 6, 'message': "密码格式错误，只能输入数字和字母的组合"})
+            else:
+                user.Password=new_password1
+                user.save()
+                return JsonResponse({'errornumber': 0, 'message': "用户密码更改成功"})
+        else:
+            return worker_index(request)
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+def History_Work(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        user_id = querylist.get('user_id')
+        user = User.objects.get(UserID=user_id)
+        if function_id == 4:
+            list = Work.objects.filter(WorkerID=user_id,Status = True)
+            worklist = []
+            for x in list:
+                y=User.objects.get(UserID=x.HouseID)
+                z=House.objects.get(HouseID=y.HouseID)
+                worklist.append({
+                    'Datetime':x.Datetime,
+                    'WorkID':x.WorkID,
+                    'HouseID':x.HouseID,
+                    'UserID':x.UserID,
+                    'Username':y.Username,
+                    'Phone':y.Phone,
+                    'Address':z.Address
+                })
+            work_id = querylist.get('work_id')
+            work = Work.objects.get(WorkID=work_id)
+            detailwork = []
+            detailwork.append({
+                'Datetime':work.Datetime,
+                'WorkID':work.WorkID,
+                'HouseID':work.HouseID,
+                'UserID':work.UserID,
+                'Username':work.Username,
+                'Phone':work.Phone,
+                'Address':work.Address,
+                'Description':work.Description,
+                'Comment':work.Comment
+            })
+            piclist = Picture.objects.filter(WorkID=work_id)
+            picturelist = []
+            for x in piclist:
+                picturelist.append(x.PicPath)
+            return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picturelist':picturelist})
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+def Todo_Work(request):
+    querylist = request.POST
+    function_id = querylist.get('function_id')
+    user_id = querylist.get('user_id')
+    user = User.objects.get(UserID=user_id)
+    if function_id == 4: #联系师傅/客服
+        work_id = querylist.get('work_id')
+        list = Message.objects.filter(WorkID=work_id)
+        messagelist = []
+        for x in list:
+            messagelist.append({
+                'errnum': x.Errornumber,
+                'id': x.UserID,
+                'text': x.Text,
+                'name': x.Username
+            })
+        return JsonResponse({'massagelist': messagelist})
+    elif function_id == 5: #提交留言
+        work_id = querylist.get('work_id')
+        Errornumber = querylist.get('errornumber')
+        UserID = querylist.get('id')
+        Text = querylist.get('text')
+        Username = querylist.get('name')
+        new_message = Message(Errornumber=Errornumber, UserID=UserID, Text=Text, Username=Username)
+        new_message.save()
+        return JsonResponse({'errornumber': 1, 'message': "留言成功！"})
+    elif function_id == 6: #查看报修/投诉详情
+        work_id = querylist.get('work_id')
+        work = Work.objects.get(WorkID=work_id)
+        house_id = work.HouseID
+        house = House.objects.get(HouseID=house_id)
+        order = Order.objects.get(HouseID=house_id)
+        picture = Picture.objects.get(WorkID=work_id)
+        return JsonResponse({'HouseID': house.HouseID,
+                             'Housename': house.Housename,
+                             'Rent': house.Rent,
+                             'Housetype': house.Housetype,
+                             'Area': house.Area,
+                             'Floor': house.Floor,
+                             'Type': house.Type,
+                             'LandlordPhone': house.LandlordPhone,
+                             'OrderDate': order.OrderDate.date(),
+                             'DueDate': order.DueDate.date(),
+                             'Introduction': house.Introduction,
+                             'ComplainPic': picture.PicPath,
+                             'ComplainText': work.Description})
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+
+def worker_index(request):
+    querylist = request.POST
+    function_id = querylist.get('function_id')
+    user_id = querylist.get('user_id')
+    user = User.objects.get(UserID=user_id)
+    if function_id == 1: #我的资料
+        picture = Picture.objects.get(PicID=user.PicID)
+        return JsonResponse({'PicPath':picture.PicPath,'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City})
+    elif function_id == 2: #历史工单
+        list = Work.objects.filter(WorkerID=user_id,Status = True)
+        worklist = []
+        for x in list:
+            y=User.objects.get(UserID=x.HouseID)
+            z=House.objects.get(HouseID=y.HouseID)
+            worklist.append({
+                'Datetime':x.Datetime,
+                'WorkID':x.WorkID,
+                'HouseID':x.HouseID,
+                'UserID':x.UserID,
+                'Username':y.Username,
+                'Phone':y.Phone,
+                'Address':z.Address
+            })
+            return JsonResponse({'worklist':worklist})
+    elif function_id == 3:
+        list = Work.objects.filter(WorkerID=user_id,Status = False)
+        worklist = []
+        for x in list:
+            y=User.objects.get(UserID=x.HouseID)
+            z=House.objects.get(HouseID=y.HouseID)
+            worklist.append({
+                'Datetime':x.Datetime,
+                'WorkID':x.WorkID,
+                'HouseID':x.HouseID,
+                'UserID':x.UserID,
+                'Username':y.Username,
+                'Phone':y.Phone,
+                'Address':z.Address
+            })
+        return JsonResponse({'worklist':worklist})
