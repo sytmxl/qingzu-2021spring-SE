@@ -8,16 +8,16 @@ from index.models import House
 #
 
 class Contract(models.Model):
-    ContractID = models.IntegerField(primary_key=True,null=False)
+    ContractID = models.AutoField(primary_key=True,null=False)
     OrderID = models.IntegerField(null=False)
     FilePath = models.CharField(max_length=50,null=False)
 
 class Order(models.Model):
-    OrderID = models.IntegerField(primary_key=True,null=False)
+    OrderID = models.AutoField(primary_key=True,null=False)
     OrderDate = models.DateTimeField(null=False)
     DueDate = models.DateTimeField(null=False)
     Price = models.IntegerField(null=False)
-    Mark = models.IntegerField(null=True)
+    Mark = models.FloatField(null=True)
     Comment = models.CharField(max_length=50,null=True)
     Pay = models.BooleanField(null=False)
     UserID = models.IntegerField(null=False)
@@ -38,14 +38,14 @@ class User(models.Model):
     Introduction = models.TextField(null=True)
 
 class Work(models.Model):
-    WorkID = models.IntegerField(primary_key=True,null=False)
+    WorkID = models.AutoField(primary_key=True,null=False)
     Datetime = models.DateField(null=False)
     HouseID = models.IntegerField(null=False)
     Description = models.TextField(null=False)
     UserID = models.IntegerField(null=False)
     WorkerID = models.IntegerField(null=True)
     Comment = models.CharField(max_length=255,null=True)
-    Mark = models.IntegerField(null=True)
+    Mark = models.FloatField(null=True)
     Status = models.BooleanField(null=False,default=False)
     Admincomment = models.TextField(null=True)
     Workercomment = models.TextField(null=True)
@@ -53,4 +53,4 @@ class Work(models.Model):
 class UserHouse(models.Model):
     UserID = models.IntegerField(null=False)
     HouseID = models.IntegerField(null=False)
-    Mark = models.IntegerField(null=True)
+    Mark = models.FloatField(null=True)
