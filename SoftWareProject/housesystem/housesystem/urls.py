@@ -31,6 +31,9 @@ urlpatterns = [
     path('information/',index.views.information),
     path('user/',user.views.user),
     path('Login/', user.views.Login), #和用户有关的网址，注册登录个人信息等
-    path('Register/',user.views.Register)
+    path('Register/',user.views.Register),
+    path('RepairMan_SelfInfo/',user.views.RepairMan_SelfInfo),
+    path('History_Work/',user.views.History_Work),
+    path('Todo_Work/',user.views.Todo_Work),
 ]
 

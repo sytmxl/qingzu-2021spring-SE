@@ -32,7 +32,7 @@ class House(models.Model):
     Status = models.BooleanField(null=False,default=False) #标志房屋是否被出租
 
 class Message(models.Model):
-    MessageID = models.IntegerField(primary_key=True,null=False)
+    MessageID = models.AutoField(primary_key=True,null=False)
     WorkID = models.IntegerField(null=True)   #没设置外键
     Errornumber = models.IntegerField(null=True)
     UserID = models.IntegerField(null=False) #没设置外键
