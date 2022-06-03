@@ -52,9 +52,9 @@ def Login(request):
             if(loginuser.Status=='Y'):
                 return JsonResponse({'errornumber': 0, 'message': "欢迎用户",'User_id':loginuser.UserID,'Username':loginuser.Username})
             elif(loginuser.Status=='G'):
-                return JsonResponse({'errornumber': 1, 'message': "欢迎管理员"})
+                return JsonResponse({'errornumber': 1, 'message': "欢迎管理员",'User_id':loginuser.UserID,'Username':loginuser.Username})
             elif(loginuser.Status=='S'):
-                return JsonResponse({'errornumber': 2, 'message': "欢迎师傅"})
+                return JsonResponse({'errornumber': 2, 'message': "欢迎师傅",'User_id':loginuser.UserID,'Username':loginuser.Username})
     else:
         return JsonResponse({'error': 5, 'message': "请求方式错误"})
 
