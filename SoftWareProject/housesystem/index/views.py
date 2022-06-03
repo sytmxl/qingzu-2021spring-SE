@@ -1,16 +1,20 @@
+# encoding:utf-8
 from django.http import JsonResponse
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 import re,json
+
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics,ttfonts
 from .models import *
 from user.models import *
 import datetime
+from reportlab.pdfgen import canvas
 from django.core import serializers
 
 @csrf_exempt
 def FirstPage(request): #主界面
     if request.method == 'POST':  # 判断请求方式是否为 POST（要求POST方式）
-
         querylist = request.POST
         function_id = querylist.get('function_id')
         user_id = querylist.get('user_id')
@@ -792,6 +796,27 @@ def information(request):
             new_contract = Contract(OrderID=order_id,FilePath=filepath)
             new_contract.save()
             return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
+        elif function_id == '7': #自动生成合同
+            username = querylist.get('username')
+            landlordname = querylist.get('landlordname')
+            address = querylist.get('address')
+            area = querylist.get('area')
+            starttime = querylist.get('starttime')
+            endtime = querylist.get('endtime')
+            pdf = canvas.Canvas(user_id+"房屋租赁合同.pdf")
+            pdfmetrics.registerFont(TTFont('song','C:/Windows/Fonts/simfang.ttf'))
+            pdf.setFont('song', 10)
+            pdf.drawString(300, 700, "房屋租赁合同")
+            pdf.drawString(100, 650, "甲方：" + landlordname)
+            pdf.drawString(100, 630, "乙方：" + username)
+            pdf.drawString(100, 610, "根据《中华人民共和国经济合同法》，为明确出租方与承租方的权利义务关系，经双方协商一致，签订本合同。")
+            pdf.drawString(100, 590, "一、甲方将位于" + address + ",面积为" + area + "平方米的房子租给乙方使用。")
+            pdf.drawString(100, 570, "二、租赁开始时间为" + starttime + ",结束时间为" + endtime)
+            pdf.drawString(100, 530, "甲方签字：")
+            pdf.drawString(300, 530, "乙方签字：")
+            pdf.showPage()
+            pdf.save()
+            return JsonResponse({'errornumber': 2, 'message': "成功！"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
