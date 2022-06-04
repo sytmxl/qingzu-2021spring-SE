@@ -396,10 +396,66 @@ def Manage_User(request):
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
 
-'''@csrf_exempt
+@csrf_exempt
 def Manage_House(request):
     if request.method == 'POST':
-        
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '4': # 查看图片
+            house_id = querylist.get('house_id')
+            pics = Picture.objects.filter(HouseID=house_id)
+            piclist = []
+            for pic in pics:
+                piclist.append({
+                    'PicID': pic.PicID,
+                    'Path': pic.PicPath
+                })
+            return JsonResponse({'piclist': piclist})
+        elif function_id == '5': #房源搜索
+            house_name = querylist.get('house_name')
+            houses = House.objects.filter(Housename__contains=house_name)
+            # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
+            houselist = []
+            for house in houses:
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
+                houselist.append({
+                    'HouseID': house.HouseID,
+                    'Housename': house.Housename,
+                    'Floor': house.Floor,
+                    'Rent': house.Rent,
+                    'Type': house.Type,
+                    'Area': house.Area,
+                    'PicPathList': list(pics)
+                })
+            return JsonResponse({'houselist': houselist})
+        elif function_id == '6':  # 下架房源(删除）
+            house_id = querylist.get('house_id')
+            House.objects.get(HouseID=house_id).delete()
+            return JsonResponse({'errornumber': 0, 'message': "下架成功"})
+        elif function_id == '7':  # 新增房源
+            id = querylist.get('house_id')
+            house = House(
+                HouseID=querylist.get('house_id'),
+                Housename=querylist.get('house_name'),
+                LandlordPhone=querylist.get('phone'),
+                LandlordName=querylist.get('landlord_name'),
+                Address=querylist.get('address'),
+                Type=querylist.get('type'),
+                Rent=querylist.get('rent'),
+                City=querylist.get('city'),
+                Housetype=querylist.get('house_type'),
+                Mark=querylist.get('mark'),
+                Area=querylist.get('area'),
+                Floor=querylist.get('floor'),
+            )
+            house.save()
+            piclist = querylist.get('pic_path_list')
+            for path in piclist:
+                pic = Picture(PicPath=path, HouseID=id)
+                pic.save()
+                newpic = Picture(HouseID=id, PicID=pic.PicID, PicPath=pic.PicPath)
+                newpic.save()
+            return JsonResponse({'errornumber': 0, 'message': "添加成功"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -407,7 +463,37 @@ def Manage_House(request):
 @csrf_exempt
 def Manage_RM(request):
     if request.method == 'POST':
-        
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '5':  # 师傅搜索
+            worker_name = querylist.get('worker_name')
+            workers = User.objects.filter(Username__contains=worker_name)
+            # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
+            workerlist = []
+            for worker in workers:
+                workerlist.append({
+                    'workerID': worker.UserID,
+                    'workername': worker.Username,
+                    'phone': worker.Phone,
+                    'place': worker.City
+                })
+            return JsonResponse({'workerlist': workerlist})
+        elif function_id == '6':  # 删除师傅
+            worker_id = querylist.get('worker_id')
+            User.objects.get(UserID=worker_id).delete()
+            return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+        elif function_id == '7':  # 添加师傅
+            id = querylist.get('worker_id')
+            worker = User(
+                UserID=querylist.get('id'),
+                Username=querylist.get('name'),
+                Status='S',
+                Phone=querylist.get('phone'),
+                Password=querylist.get('password'),
+                City=querylist.get('city')
+            )
+            worker.save()
+            return JsonResponse({'errornumber': 0, 'message': "添加成功"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -415,7 +501,46 @@ def Manage_RM(request):
 @csrf_exempt
 def Manage_Contract(request):
     if request.method == 'POST':
-        
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '9':#搜索合同 基于用户名
+            name = querylist.get('name')
+            users = User.objects.filter(Username__contains=name)
+            contracts = []
+            for user in users:
+                orders = Order.objects.filter(UserID=user.UserID)
+                for order in orders:
+                    contract = Contract.objects.get(OrderID=order.OrderID)
+                    if contract.Passed:
+                        contracts.append(contract)
+            contract_list = []
+            for contract in contracts:
+                order = Order.objects.get(OrderID=contract.OrderID)
+                user = User.objects.get(UserID=order.UserID)
+                house = House.objects.get(HouseID=order.HouseID)
+                contract_list.append({
+                    'contract_id': contract.ContractID,
+                    'order_id': order.OrderID,
+                    'path': contract.FilePath,
+                    'user_id': user.UserID,
+                    'house_id': house.HouseID,
+                    'user_name': user.Username,
+                    'address': house.Address,
+                    'rent': house.Rent,
+                })
+            return JsonResponse({'contract_list': contract_list})
+        if function_id == '10': #查看合同
+            contract_id = querylist.get('contract_id')
+            contract = Contract.objects.get(ContractID=contract_id)
+            path = contract.FilePath
+            return JsonResponse({'path': path})
+        if function_id == '11': #delete
+            contract_id = querylist.get('contract_id')
+            contract = Contract.objects.get(ContractID=contract_id)
+            contract.delete()
+            order = Order.objects.get(OrderID=contract.OrderID)
+            order.delete()
+            return JsonResponse({'errornumber': 0, 'message': "删除成功"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -423,22 +548,144 @@ def Manage_Contract(request):
 @csrf_exempt
 def UnManaged_Contract(request):
     if request.method == 'POST':
-        
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '9':  # 搜索合同 基于用户名
+            name = querylist.get('name')
+            users = User.objects.filter(Username__contains=name)
+            contracts = []
+            for user in users:
+                orders = Order.objects.filter(UserID=user.UserID)
+                for order in orders:
+                    contract = Contract.objects.get(OrderID=order.OrderID)
+                    if not contract.Passed:
+                        contracts.append(contract)
+            contract_list = []
+            for contract in contracts:
+                order = Order.objects.get(OrderID=contract.OrderID)
+                user = User.objects.get(UserID=order.UserID)
+                house = House.objects.get(HouseID=order.HouseID)
+                contract_list.append({
+                    'contract_id': contract.ContractID,
+                    'order_id': order.OrderID,
+                    'path': contract.FilePath,
+                    'user_id': user.UserID,
+                    'house_id': house.HouseID,
+                    'user_name': user.Username,
+                    'address': house.Address,
+                    'rent': house.Rent,
+                })
+            return JsonResponse({'contract_list': contract_list})
+        elif function_id == '12':   # 审查合同
+            result = querylist.get('result')
+            if result == '1':
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
+                contract.Passed = True
+                contract.save()
+            return JsonResponse({'errornumber': 0, 'message': "审查成功"})
+        else:
+            return Manage_Contract(request)
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+@csrf_exempt
+def Manage_Complain(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '9':  # 搜索待处理工单 此时详细信息一并给予
+            works = Work.objects.filter(Status=False)   # 筛选未处理
+            worklist = []
+            for work in works:
+                user = User.objects.get(UserID=work.UserID)
+                house = House.objects.get(HouseID=work.HouseID)
+                order = Order.objects.get(HouseID=house.HouseID)
+                picture = Picture.objects.get(WorkID=work.WorkID)
+                worklist.append({
+                    'Datetime': work.Datetime,
+                    'WorkID': work.WorkID,
+                    'HouseID': work.HouseID,
+                    'UserID': work.UserID,
+                    'Username': user.Username,
+                    'Phone': user.Phone,
+                    'Address': house.Address,
+                    'Housename': house.Housename,
+                    'Rent': house.Rent,
+                    'Housetype': house.Housetype,
+                    'Area': house.Area,
+                    'Floor': house.Floor,
+                    'Type': house.Type,
+                    'LandlordPhone': house.LandlordPhone,
+                    'OrderDate': order.OrderDate.date(),
+                    'DueDate': order.DueDate.date(),
+                    'Introduction': house.Introduction,
+                    'ComplainPic': picture.PicPath,
+                    'ComplainText': work.Description
+                })
+            return JsonResponse({'worklist': worklist})
+        elif function_id == '10':   # 返回空闲师傅
+            workers = User.objects.filter(Status='S', WorkID='')
+            worker_list = []
+            for worker in workers:
+                worker_list.append({
+                    'name': worker.Username,
+                    'id': worker.UserID
+                })
+            return JsonResponse({'worker_list': worker_list})
+        elif function_id == '11':   # 分配师傅
+            worker_id_list = querylist.get('worker_id_list')
+            work_id = querylist.get('work_id')
+            for worker_id in worker_id_list:
+                worker = User.objects.get(UserID=worker_id)
+                worker.WorkID = work_id
+            return JsonResponse({'errornumber': 0, 'message': "分配师傅成功"})
+        elif function_id == '12':  # 提交留言
+            work_id = querylist.get('work_id')
+            UserID = querylist.get('id')
+            Text = querylist.get('text')
+            Username = querylist.get('name')
+            new_message = Message(Errornumber=1, UserID=UserID, Text=Text, Username=Username, WorkID=work_id)
+            new_message.save()
+            return JsonResponse({'errornumber': 1, 'message': "留言成功！"})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
 
 @csrf_exempt
-def Manage_Contract(request):
+def Managed_Complain(request):
     if request.method == 'POST':
-        
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '9':  # 搜索待处理工单 此时详细信息一并给予
+            works = Work.objects.filter(Status=True)    # 筛选已处理
+            worklist = []
+            for work in works:
+                user = User.objects.get(UserID=work.UserID)
+                house = House.objects.get(HouseID=work.HouseID)
+                order = Order.objects.get(HouseID=house.HouseID)
+                picture = Picture.objects.get(WorkID=work.WorkID)
+                worklist.append({
+                    'Datetime': work.Datetime,
+                    'WorkID': work.WorkID,
+                    'HouseID': work.HouseID,
+                    'UserID': work.UserID,
+                    'Username': user.Username,
+                    'Phone': user.Phone,
+                    'Address': house.Address,
+                    'Housename': house.Housename,
+                    'Rent': house.Rent,
+                    'Housetype': house.Housetype,
+                    'Area': house.Area,
+                    'Floor': house.Floor,
+                    'Type': house.Type,
+                    'LandlordPhone': house.LandlordPhone,
+                    'OrderDate': order.OrderDate.date(),
+                    'DueDate': order.DueDate.date(),
+                    'Introduction': house.Introduction,
+                    'ComplainPic': picture.PicPath,
+                    'ComplainText': work.Description
+                })
+            return JsonResponse({'worklist': worklist})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
-
-
-@csrf_exempt
-def Managed_Contract(request):
-    if request.method == 'POST':
-        
-    else:
-        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})'''

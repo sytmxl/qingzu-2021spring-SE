@@ -11,6 +11,7 @@ class Contract(models.Model):
     ContractID = models.AutoField(primary_key=True,null=False)
     OrderID = models.IntegerField(null=False)
     FilePath = models.CharField(max_length=50,null=False)
+    Passed = models.BooleanField(default=False) # 是否被管理员审核通过过
 
 class Order(models.Model):
     OrderID = models.AutoField(primary_key=True,null=False)
@@ -36,6 +37,7 @@ class User(models.Model):
     City = models.CharField(max_length=255,null=True)
     Job = models.CharField(max_length=255,null=True)
     Introduction = models.TextField(null=True)
+    WorkID = models.IntegerField(null=True, default=0)  # 判定师傅空闲 为0则空闲 为一workID则忙于对应work
 
 class Work(models.Model):
     WorkID = models.AutoField(primary_key=True,null=False)

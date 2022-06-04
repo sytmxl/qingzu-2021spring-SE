@@ -166,36 +166,39 @@ def search(request): #我要租房
             # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
             houselist = []
             for house in houses:
-                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': house.HouseID,
-                    'Housename': house.Housename,
-                    'Floor': house.Floor,
-                    'Rent': house.Rent,
-                    'Type': house.Type,
-                    'Area': house.Area,
-                    'PicPathList': list(pics)
+                    'id': house.HouseID
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '8': #房源筛选
-            houses = House.objects.filter(# 具体get名称未对接
-                City=querylist.get('city'),
-                Type=querylist.get('type')
-            )
-
+            city = querylist.get('city')
+            type = querylist.get('type')
             rent = querylist.get('rent')
-            if rent == 0:
-                houses.filter(rent__lte=1000)
-            if rent == 1:
-                houses.filter(rent__gte=1000).filter(rent__lte=3000)
-            if rent == 2:
-                houses.filter(rent__gte=3000).filter(rent__lte=5000)
-            if rent == 3:
-                houses.filter(rent__gte=5000).filter(rent__lte=10000)
-            if rent == 4:
-                houses.filter(rent__gte=10000)
 
-            return JsonResponse(list(houses))
+            houses = House.objects.all()
+
+            if city != '':
+                houses = houses.filter(City=city)
+            if type != '':
+                houses = houses.filter(Housetype=type)
+
+            if rent == '1':
+                houses = houses.filter(Rent__lte=1000)
+            if rent == '2':
+                houses = houses.filter(Rent__gte=1000).filter(Rent__lte=3000)
+            if rent == '3':
+                houses = houses.filter(Rent__gte=3000).filter(Rent__lte=5000)
+            if rent == '4':
+                houses = houses.filter(Rent__gte=5000).filter(Rent__lte=10000)
+            if rent == '5':
+                houses = houses.filter(Rent__gte=10000)
+
+            houselist = []
+            for house in houses:
+                houselist.append({
+                    'id': house.HouseID
+                })
+            return JsonResponse({'houselist': houselist})
         elif function_id == '9': #提交申请
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
