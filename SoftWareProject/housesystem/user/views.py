@@ -30,7 +30,7 @@ def Register(request):
         else:
             new_user = User(Username=username,Password=password_1,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
             new_user.save()
-            return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID})
+            return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID,'username':new_user.Username})
     else:
         return JsonResponse({'errornumber': 1, 'message': "请求方式错误"})
 
@@ -140,6 +140,8 @@ def RepairMan_SelfInfo(request):
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
             else:
+                user.Phone=phone
+                user.save()
                 return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
         elif function_id == '6': #修改密码
             original_password = querylist.get('original_password')
@@ -203,6 +205,8 @@ def History_Work(request):
             for x in piclist:
                 picturelist.append(x.PicPath)
             return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picturelist':picturelist})
+        else:
+            return worker_index(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -254,6 +258,8 @@ def Todo_Work(request):
                                  'Introduction': house.Introduction,
                                  'ComplainPic': picture.PicPath,
                                  'ComplainText': work.Description})
+        else:
+            return worker_index(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -270,32 +276,36 @@ def worker_index(request):
         list = Work.objects.filter(WorkerID=user_id,Status = True)
         worklist = []
         for x in list:
-            y=User.objects.get(UserID=x.UserID)
-            z=House.objects.get(HouseID=x.HouseID)
+            y = User.objects.get(UserID=x.UserID)
+            z = House.objects.get(HouseID=x.HouseID)
             worklist.append({
-                'Datetime':x.Datetime,
-                'WorkID':x.WorkID,
-                'HouseID':x.HouseID,
-                'UserID':x.UserID,
-                'Username':y.Username,
-                'Phone':y.Phone,
-                'Address':z.Address
+                'Datetime': x.Datetime,
+                'WorkID': x.WorkID,
+                'HouseID': x.HouseID,
+                'UserID': x.UserID,
+                'Username': y.Username,
+                'Phone': y.Phone,
+                'Address': z.Address,
+                'Description': x.Description,
+                'Comment': x.Comment
             })
         return JsonResponse({'worklist':worklist})
     elif function_id == '3': #正在处理工单
         list = Work.objects.filter(WorkerID=user_id,Status = False)
         worklist = []
         for x in list:
-            y=User.objects.get(UserID=x.UserID)
-            z=House.objects.get(HouseID=x.HouseID)
+            y = User.objects.get(UserID=x.UserID)
+            z = House.objects.get(HouseID=x.HouseID)
             worklist.append({
-                'Datetime':x.Datetime,
-                'WorkID':x.WorkID,
-                'HouseID':x.HouseID,
-                'UserID':x.UserID,
-                'Username':y.Username,
-                'Phone':y.Phone,
-                'Address':z.Address
+                'Datetime': x.Datetime,
+                'WorkID': x.WorkID,
+                'HouseID': x.HouseID,
+                'UserID': x.UserID,
+                'Username': y.Username,
+                'Phone': y.Phone,
+                'Address': z.Address,
+                'Description': x.Description,
+                'Comment': x.Comment
             })
         return JsonResponse({'worklist':worklist})
 
