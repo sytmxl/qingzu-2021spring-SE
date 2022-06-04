@@ -269,21 +269,46 @@ def worker_index(request):
         picture = Picture.objects.get(PicID=user.PicID)
         return JsonResponse({'PicPath':picture.PicPath,'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City})
     elif function_id == '2': #历史工单
-        list = Work.objects.filter(WorkerID=user_id,Status = True)
-        worklist = []
-        for x in list:
-            y=User.objects.get(UserID=x.UserID)
-            z=House.objects.get(HouseID=x.HouseID)
-            worklist.append({
-                'Datetime':x.Datetime,
-                'WorkID':x.WorkID,
-                'HouseID':x.HouseID,
-                'UserID':x.UserID,
-                'Username':y.Username,
-                'Phone':y.Phone,
-                'Address':z.Address
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        user_id = querylist.get('user_id')
+        user = User.objects.get(UserID=user_id)
+        if function_id == '4':#查看详细信息
+            list = Work.objects.filter(WorkerID=user_id,Status = True)
+            worklist = []
+            for x in list:
+                y = User.objects.get(UserID=x.UserID)
+                z = House.objects.get(HouseID=x.HouseID)
+                worklist.append({
+                    'Datetime':x.Datetime,
+                    'WorkID':x.WorkID,
+                    'HouseID':x.HouseID,
+                    'UserID':x.UserID,
+                    'Username':y.Username,
+                    'Phone':y.Phone,
+                    'Address':z.Address
+                })
+            work_id = querylist.get('work_id')
+            work = Work.objects.get(WorkID=work_id)
+            renter = User.objects.get(UserID=work.UserID)
+            house = House.objects.get(HouseID=work.HouseID)
+            detailwork = []
+            detailwork.append({
+                'Datetime':work.Datetime,
+                'WorkID':work.WorkID,
+                'HouseID':work.HouseID,
+                'UserID':work.UserID,
+                'Username':renter.Username,
+                'Phone':renter.Phone,
+                'Address':house.Address,
+                'Description':work.Description,
+                'Comment':work.Comment
             })
-        return JsonResponse({'worklist':worklist})
+            piclist = Picture.objects.filter(WorkID=work_id)
+            picturelist = []
+            for x in piclist:
+                picturelist.append(x.PicPath)
+            return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picturelist':picturelist})
     elif function_id == '3': #正在处理工单
         list = Work.objects.filter(WorkerID=user_id,Status = False)
         worklist = []
