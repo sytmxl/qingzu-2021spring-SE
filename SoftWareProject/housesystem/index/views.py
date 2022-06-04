@@ -528,7 +528,7 @@ def service(request):
             house_id = order.HouseID
             description = querylist.get('description')
             picpath = querylist.get('picpath')
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,Phone=user.Phone,Username=user.Username)
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
             new_work.save()
             work = Work.objects.get(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
             new_picture = Picture(PicPath=picpath, HouseID=house_id, WorkID=work.WorkID)
@@ -643,8 +643,6 @@ def connect(request):
         elif function_id == '4':  # 主页
 
             return JsonResponse()
-
-
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -779,7 +777,7 @@ def information(request):
             price = house.Rent*day
             new_order = Order(OrderDate = start_day , DueDate = finish_day , Price=price , Pay=True , UserID=user_id , HouseID=house_id)
             new_order.save()
-            return JsonResponse({'errornumber': 0, 'message': "短租成功！"})
+            return JsonResponse({'errornumber': 0, 'message': "短租成功！",'order_id':new_order.OrderID})
         elif function_id == '6': #长租
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
