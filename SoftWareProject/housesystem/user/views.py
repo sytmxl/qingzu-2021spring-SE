@@ -299,3 +299,146 @@ def worker_index(request):
             })
         return JsonResponse({'worklist':worklist})
 
+
+@csrf_exempt
+def Commander_FirstPage(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        user_id = querylist.get('user_id')
+        user = User.objects.get(UserID=user_id)
+        if function_id == '4':  # 修改头像
+            new_picture = Picture(PicPath=querylist.get('PicPath'))
+            new_picture.save()
+            return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
+        elif function_id == '5':  # 修改电话
+            phone = querylist.get('phone')
+            if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
+                return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
+            else:
+                return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
+        elif function_id == '6':  # 修改密码
+            original_password = querylist.get('original_password')
+            new_password1 = querylist.get('new_password1')
+            new_password2 = querylist.get('new_password2')
+            if (original_password != user.Password):
+                return JsonResponse({'errornumber': 4, 'message': "密码错误"})
+            elif (new_password1 != new_password2):
+                return JsonResponse({'errornumber': 5, 'message': "两次输入的密码不一致"})
+            elif (re.match("^[A-Za-z0-9]+$", new_password1) == None):
+                return JsonResponse({'errornumber': 6, 'message': "密码格式错误，只能输入数字和字母的组合"})
+            else:
+                user.Password = new_password1
+                user.save()
+                return JsonResponse({'errornumber': 0, 'message': "用户密码更改成功"})
+        elif function_id == '7':  # 修改邮箱
+            email = querylist.get('email')
+            if re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$", email) is None:  # // 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
+                return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
+            else:
+                user.Email = email
+                user.save()
+                return JsonResponse({'errornumber': 0, 'message': "邮箱更改成功"})
+        else:
+            return worker_index(request)
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def Manage_User(request):
+    if request.method == 'POST':
+        querylist = request.POST
+        function_id = querylist.get('function_id')
+        if function_id == '4':  # 修改资料
+            # TODO 不修改就保持原样
+            # TODO 协商详细修改项
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
+            name = querylist.get('name')
+            phone = querylist.get('phone')
+            city = querylist.get('city')
+            '''order = Order.objects.filter(UserID=user_id).latest()
+            house = House.objects.get(HouseID=order.HouseID)
+            address = house.Address'''
+            if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
+                return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
+            user.Phone = phone
+            user.Username = name
+            user.City = city
+            user.save()
+            return JsonResponse({'errornumber': 0, 'message': "租客信息更改成功"})
+        elif function_id == '5':  # 删除
+            user_id = querylist.get('user_id')
+            User.objects.get(UserID=user_id).delete()
+            return JsonResponse({'errornumber': 0, 'message': "租客删除成功"})
+        elif function_id == '6': # 搜索
+            user_name = querylist.get('user_name')
+            try:
+                users = User.objects.filter(Username__contains=user_name)
+                userlist = []
+                for user in users:
+                    userlist.append({'UserID': user.UserID,
+                                     'Email': user.Email,
+                                     'Phone': user.Phone,
+                                     'City': user.City,
+                                     'Username': user.Username,
+                                     'ID': user.ID,
+                                     'Introduction': user.Introduction,
+                                     'Job': user.Job,
+                                     'Password': user.Password,
+                                     'Login': user.Login
+                                     })
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该用户"})
+            return JsonResponse({'userlist': userlist})
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+'''@csrf_exempt
+def Manage_House(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def Manage_RM(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def Manage_Contract(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def UnManaged_Contract(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def Manage_Contract(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
+
+
+@csrf_exempt
+def Managed_Contract(request):
+    if request.method == 'POST':
+        
+    else:
+        return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})'''
