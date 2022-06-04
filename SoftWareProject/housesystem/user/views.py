@@ -30,7 +30,7 @@ def Register(request):
         else:
             new_user = User(Username=username,Password=password_1,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
             new_user.save()
-            return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID})
+            return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID,'username':new_user.UserID})
     else:
         return JsonResponse({'errornumber': 1, 'message': "请求方式错误"})
 
