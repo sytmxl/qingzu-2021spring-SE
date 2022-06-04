@@ -205,6 +205,8 @@ def History_Work(request):
             for x in piclist:
                 picturelist.append(x.PicPath)
             return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picturelist':picturelist})
+        else:
+            return worker_index(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -256,6 +258,8 @@ def Todo_Work(request):
                                  'Introduction': house.Introduction,
                                  'ComplainPic': picture.PicPath,
                                  'ComplainText': work.Description})
+        else:
+            return worker_index(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
