@@ -140,6 +140,8 @@ def RepairMan_SelfInfo(request):
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
             else:
+                user.Phone=phone
+                user.save()
                 return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
         elif function_id == '6': #修改密码
             original_password = querylist.get('original_password')
