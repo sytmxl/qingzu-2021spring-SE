@@ -332,6 +332,8 @@ def Commander_FirstPage(request):
 
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
         elif function_id == '10': #修改电话
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
             phone = querylist.get('phone')
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
