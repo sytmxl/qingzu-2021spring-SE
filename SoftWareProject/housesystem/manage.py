@@ -2,6 +2,8 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from sendemail import *
+from threading import Thread
 
 
 def main():
@@ -20,3 +22,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # Thread(target=everyday).start()
