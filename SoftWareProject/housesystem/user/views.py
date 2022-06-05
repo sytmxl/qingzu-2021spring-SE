@@ -848,11 +848,14 @@ def admin_sidebar(request):
             works = Work.objects.filter(Status=True)  # 筛选未处理
             worklist = []
             for work in works:
-                # TODO
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(HouseID=house.HouseID)
-                picture = Picture.objects.get(WorkID=work.WorkID)
+                try:
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    path = picture.PicPath
+                except:
+                    path = ''
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -871,7 +874,7 @@ def admin_sidebar(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': path,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
@@ -879,11 +882,14 @@ def admin_sidebar(request):
             works = Work.objects.filter(Status=False)  # 筛选未处理
             worklist = []
             for work in works:
-                # TODO
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(HouseID=house.HouseID)
-                picture = Picture.objects.get(WorkID=work.WorkID)
+                try:
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    path = picture.PicPath
+                except:
+                    path = ''
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -902,7 +908,7 @@ def admin_sidebar(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': path,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
@@ -910,7 +916,6 @@ def admin_sidebar(request):
             contracts = Contract.objects.get(Passed=False)
             contract_list = []
             for contract in contracts:
-                # TODO
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
                 house = House.objects.get(HouseID=order.HouseID)
@@ -929,7 +934,6 @@ def admin_sidebar(request):
             contracts = Contract.objects.get(Passed=True)
             contract_list = []
             for contract in contracts:
-                # TODO
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
                 house = House.objects.get(HouseID=order.HouseID)
