@@ -746,13 +746,17 @@ def admin_sidebar(request):
         if function_id == '1': # 主页
             id = querylist.get('id')
             user = User.objects.get(UserID=id)
-            pic = Picture.objects.get(PicID=user.PicID)
+            try:
+                pic = Picture.objects.get(PicID=user.PicID)
+                path = pic.PicPath
+            except:
+                path = ''
             return JsonResponse({
                 'name':user.Username, # 管理员名字
                 'id': user.UserID, # 管理员ID
                 'phone': user.Phone,
                 'email': user.Email,
-                'path': pic.PicPath #头像图片路径
+                'path': path #头像图片路径
             })
         elif function_id == '2':    # 管理租客
             users = User.objects.filter(Username__contains=user_name)
