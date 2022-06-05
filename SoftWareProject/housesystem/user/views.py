@@ -157,6 +157,14 @@ def RepairMan_SelfInfo(request):
                 user.Password=new_password1
                 user.save()
                 return JsonResponse({'errornumber': 0, 'message': "用户密码更改成功"})
+        elif funtcion_id == '7': #修改邮箱
+            email = querylist.get('email')
+            if (re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$",email) == None):  # // 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
+                return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
+            else:
+                user.Email = email
+                user.save()
+                return JsonResponse({'errornumber': 0, 'message': "用户邮箱更改成功"})
         else:
             return worker_index(request)
     else:
@@ -271,7 +279,7 @@ def worker_index(request):
     user = User.objects.get(UserID=user_id)
     if function_id == '1': #我的资料
         picture = Picture.objects.get(PicID=user.PicID)
-        return JsonResponse({'PicPath':picture.PicPath,'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City})
+        return JsonResponse({'PicPath':picture.PicPath,'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City,'Email':user.Email})
     elif function_id == '2': #历史工单
         list = Work.objects.filter(WorkerID=user_id,Status = True)
         worklist = []
