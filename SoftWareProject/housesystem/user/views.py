@@ -626,7 +626,13 @@ def Manage_Complain(request):
         function_id = querylist.get('function_id')
         if function_id == '9':  # 搜索待处理工单 此时详细信息一并给予
             # TODO
-            works = Work.objects.filter(Status=False)   # 筛选未处理
+            name = querylist.get('name')
+            users = User.objects.filter(Username__contains=name)
+            works = []
+            for user in users:
+                work = Work.objects.get(UserID=user.UserID)
+                if work.Status is False:
+                    works.append(work)
             worklist = []
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
@@ -692,7 +698,13 @@ def Managed_Complain(request):
         function_id = querylist.get('function_id')
         if function_id == '9':  # 搜索待处理工单 此时详细信息一并给予
             #TODO
-            works = Work.objects.filter(Status=True)    # 筛选已处理
+            name = querylist.get('name')
+            users = User.objects.filter(Username__contains=name)
+            works = []
+            for user in users:
+                work = Work.objects.get(UserID=user.UserID)
+                if work.Status is True:
+                    works.append(work)
             worklist = []
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
@@ -736,11 +748,11 @@ def admin_sidebar(request):
             user = User.objects.get(UserID=id)
             pic = Picture.objects.get(PicID=user.PicID)
             return JsonResponse({
-                'name':user.Username,
-                'id': user.UserID,
+                'name':user.Username, # 管理员名字
+                'id': user.UserID, # 管理员ID
                 'phone': user.Phone,
                 'email': user.Email,
-                'path': pic.PicPath
+                'path': pic.PicPath #头像图片路径
             })
         elif function_id == '2':    # 管理租客
             users = User.objects.filter(Username__contains=user_name)
@@ -755,8 +767,9 @@ def admin_sidebar(request):
                                  'Introduction': user.Introduction,
                                  'Job': user.Job,
                                  'Password': user.Password,
-                                 'Login': user.Login
+                                 'Login': user.Login    # 是否登陆
                                  })
+            return JsonResponse({'userlist': userlist})
         elif function_id == '3':    # 管理房间
             houses = House.objects.all()
             houselist = []
@@ -814,6 +827,7 @@ def admin_sidebar(request):
                     'ComplainPic': picture.PicPath,
                     'ComplainText': work.Description
                 })
+            return JsonResponse({'worklist': worklist})
         elif function_id == '6':    # 未处理申诉
             works = Work.objects.filter(Status=False)  # 筛选未处理
             worklist = []
@@ -843,6 +857,7 @@ def admin_sidebar(request):
                     'ComplainPic': picture.PicPath,
                     'ComplainText': work.Description
                 })
+            return JsonResponse({'worklist': worklist})
         elif function_id == '7':    # 待处理合同
             contracts = Contract.objects.get(Passed=False)
             contract_list = []
