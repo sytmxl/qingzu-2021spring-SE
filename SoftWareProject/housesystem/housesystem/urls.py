@@ -35,5 +35,13 @@ urlpatterns = [
     path('RepairMan_SelfInfo/',user.views.RepairMan_SelfInfo),
     path('History_Work/',user.views.History_Work),
     path('Todo_Work/',user.views.Todo_Work),
+    path('Commander_FirstPage/',user.views.Commander_FirstPage),
+    path('Manage_User/',user.views.Manage_User),
+    path('Manage_House/',user.views.Manage_House),
+    path('Manage_RM/',user.views.Manage_RM),
+    path('Manage_Contract/',user.views.Manage_Contract),
+    path('UnManaged_Contract/',user.views.UnManaged_Contract),
+    path('Manage_Complain/',user.views.Manage_Complain),
+    path('Managed_Complain/',user.views.Managed_Complain),
 ]
 
