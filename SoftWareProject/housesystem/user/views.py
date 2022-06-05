@@ -794,7 +794,7 @@ def admin_sidebar(request):
                 'path': path #头像图片路径
             })
         elif function_id == '2':    # 管理租客
-            users = User.objects.filter(Username__contains=user_name)
+            users = User.objects.all()
             userlist = []
             for user in users:
                 userlist.append({'UserID': user.UserID,
