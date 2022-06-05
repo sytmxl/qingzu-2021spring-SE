@@ -315,9 +315,9 @@ def Commander_FirstPage(request):
     if request.method == 'POST':
         querylist = request.POST
         function_id = querylist.get('function_id')
-        user_id = querylist.get('user_id')
-        user = User.objects.get(UserID=user_id)
         if function_id == '9':  # 修改头像
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
             pic_path = querylist.get('pic_path')
 
             if user.PicID is not '':
@@ -332,12 +332,16 @@ def Commander_FirstPage(request):
 
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
         elif function_id == '10':  # 修改电话
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
             phone = querylist.get('phone')
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
             else:
                 return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
         elif function_id == '11':  # 修改密码
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
             original_password = querylist.get('original_password')
             new_password1 = querylist.get('new_password1')
             new_password2 = querylist.get('new_password2')
@@ -352,6 +356,8 @@ def Commander_FirstPage(request):
                 user.save()
                 return JsonResponse({'errornumber': 0, 'message': "用户密码更改成功"})
         elif function_id == '12':  # 修改邮箱
+            user_id = querylist.get('user_id')
+            user = User.objects.get(UserID=user_id)
             email = querylist.get('email')
             if re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$", email) is None:  # // 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
                 return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
