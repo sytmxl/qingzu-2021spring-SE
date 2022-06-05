@@ -886,6 +886,7 @@ def Managed_Complain(request):
                     'WorkID': work.WorkID,
                     'HouseID': work.HouseID,
                     'UserID': work.UserID,
+                    'WorkID': work.WorkID,
                     'Username': user.Username,
                     'Phone': user.Phone,
                     'Address': house.Address,
