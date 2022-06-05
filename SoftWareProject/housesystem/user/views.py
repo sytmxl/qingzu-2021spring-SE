@@ -584,6 +584,7 @@ def Manage_RM(request):
                 worker = User(
                     UserID=querylist.get('id'),
                     Username=querylist.get('name'),
+                    Email=querylist.get('email'),
                     Status='S',
                     Phone=querylist.get('phone'),
                     Password=querylist.get('password'),
