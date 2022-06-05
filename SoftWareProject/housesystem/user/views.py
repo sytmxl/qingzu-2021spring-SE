@@ -1037,6 +1037,7 @@ def admin_sidebar(request):
                     'WorkID': work.WorkID,
                     'HouseID': work.HouseID,
                     'UserID': work.UserID,
+                    'WorkerID': work.WorkerID,
                     'Username': user.Username,
                     'Phone': user.Phone,
                     'Address': house.Address,
