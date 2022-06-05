@@ -954,7 +954,7 @@ def admin_sidebar(request):
                 'path': path #头像图片路径
             })
         elif function_id == '2':    # 管理租客
-            users = User.objects.all()
+            users = User.objects.filter(Status='Y')
             userlist = []
             for user in users:
                 userlist.append({'UserID': user.UserID,
@@ -994,7 +994,7 @@ def admin_sidebar(request):
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '4':    # 管理师傅
-            workers = User.objects.all()
+            workers = User.objects.filter(Status='S')
             worker_list = []
             for worker in workers:
                 worker_list.append({
