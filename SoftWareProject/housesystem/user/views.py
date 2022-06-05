@@ -413,7 +413,7 @@ def Manage_User(request):
         elif function_id == '11': # 用户名搜索
             user_name = querylist.get('user_name')
             try:
-                users = User.objects.filter(Username__contains=user_name)
+                users = User.objects.filter(Username__contains=user_name, Status='Y')
                 userlist = []
                 for user in users:
                     userlist.append({'UserID': user.UserID,
@@ -433,7 +433,7 @@ def Manage_User(request):
         elif function_id == '12':   # id 搜索
             id = querylist.get('id')
             try:
-                user = User.objects.get(UserID=id)
+                user = User.objects.get(UserID=id, Status='Y')
                 return JsonResponse({
                     'UserID': user.UserID,
                     'Email': user.Email,
@@ -549,7 +549,7 @@ def Manage_RM(request):
         function_id = querylist.get('function_id')
         if function_id == '9':  # 师傅搜索
             worker_name = querylist.get('worker_name')
-            workers = User.objects.filter(Username__contains=worker_name)
+            workers = User.objects.filter(Username__contains=worker_name, Status='S')
             workerlist = []
             for worker in workers:
                 workerlist.append({
@@ -562,7 +562,7 @@ def Manage_RM(request):
         elif function_id == '12':   # id search
             id = querylist.get('id')
             try:
-                worker = User.objects.get(UserID=id)
+                worker = User.objects.get(UserID=id, Status='S')
                 return JsonResponse({
                     'workerID': worker.UserID,
                     'workername': worker.Username,
