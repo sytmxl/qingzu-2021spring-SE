@@ -360,7 +360,7 @@ def Commander_FirstPage(request):
                 user.save()
                 return JsonResponse({'errornumber': 0, 'message': "邮箱更改成功"})
         else:
-            return worker_index(request)
+            return admin_sidebar(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
