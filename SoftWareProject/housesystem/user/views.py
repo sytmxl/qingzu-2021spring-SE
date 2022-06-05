@@ -564,7 +564,8 @@ def Manage_RM(request):
                     'workerID': worker.UserID,
                     'workername': worker.Username,
                     'phone': worker.Phone,
-                    'place': worker.City
+                    'place': worker.City,
+                    'email': worker.Email
                 })
             return JsonResponse({'workerlist': workerlist})
         elif function_id == '12':   # id search
@@ -575,7 +576,8 @@ def Manage_RM(request):
                     'workerID': worker.UserID,
                     'workername': worker.Username,
                     'phone': worker.Phone,
-                    'place': worker.City
+                    'place': worker.City,
+                    'email': worker.Email
                 })
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该师傅"})
@@ -661,12 +663,12 @@ def Manage_Contract(request):
                     return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
-        if function_id == '10': #查看合同
+        if function_id == '10': # 查看合同
             contract_id = querylist.get('contract_id')
             contract = Contract.objects.get(ContractID=contract_id)
             path = contract.FilePath
             return JsonResponse({'path': path})
-        if function_id == '11': #delete
+        if function_id == '11': # delete
             try:
                 contract_id = querylist.get('contract_id')
                 contract = Contract.objects.get(ContractID=contract_id)
