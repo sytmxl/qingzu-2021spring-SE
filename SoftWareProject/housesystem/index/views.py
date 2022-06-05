@@ -162,7 +162,7 @@ def search(request): #我要租房
                 return JsonResponse({'errornumber': 1, 'message': "成功登录并收藏！"})#未成功登录的情况暂时由前端处理
         elif function_id == '7': #房源搜索
             house_name = querylist.get('house_name')
-            houses = House.objects.filter(Housename__contains=house_name)
+            houses = House.objects.filter(Housename__contains=house_name,Status=False)
             # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
             houselist = []
             for house in houses:
@@ -175,7 +175,7 @@ def search(request): #我要租房
             type = querylist.get('type')
             rent = querylist.get('rent')
 
-            houses = House.objects.all()
+            houses = House.objects.filter(Status=False)
 
             if city != '':
                 houses = houses.filter(City=city)
@@ -201,7 +201,7 @@ def search(request): #我要租房
             return JsonResponse({'houselist': houselist})
         elif function_id == '9': #提交申请
             house_id = querylist.get('house_id')
-            house = House.objects.get(HouseID=house_id)
+            house = House.objects.get(HouseID=house_id,Status=False)
             start_day = datetime.datetime.strptime(querylist.get('start_day'), '%Y-%m-%d').date()
             finish_day = datetime.datetime.strptime(querylist.get('finish_day'), '%Y-%m-%d').date()
             day = (finish_day-start_day).days
@@ -784,6 +784,7 @@ def information(request):
             return JsonResponse()
         elif function_id == '5': #短租
             house_id = querylist.get('house_id')
+            flag = querylist.get('flag')
             house = House.objects.get(HouseID=house_id)
             house.Status = True
             house.save()
@@ -791,9 +792,12 @@ def information(request):
             finish_day = datetime.datetime.strptime(querylist.get('finish_day'), '%Y-%m-%d').date()
             day = (finish_day-start_day).days
             price = house.Rent*day
-            new_order = Order(OrderDate = start_day , DueDate = finish_day , Price=price , Pay=True , UserID=user_id , HouseID=house_id)
-            new_order.save()
-            return JsonResponse({'errornumber': 0, 'message': "短租成功！",'order_id':new_order.OrderID})
+            if flag == '1':
+                return JsonResponse({'dayrent': house.Rent, 'day':day , 'price': price})
+            elif flag == '2':
+                new_order = Order(OrderDate = start_day , DueDate = finish_day , Price=price , Pay=True , UserID=user_id , HouseID=house_id)
+                new_order.save()
+                return JsonResponse({'errornumber': 0, 'message': "短租成功！",'order_id':new_order.OrderID})
         elif function_id == '6': #长租
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
