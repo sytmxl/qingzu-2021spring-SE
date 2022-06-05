@@ -331,11 +331,14 @@ def Commander_FirstPage(request):
                 user.save()
 
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
-        elif function_id == '10': #修改电话
+        elif function_id == '10': # 修改电话
             user_id = querylist.get('user_id')
             user = User.objects.get(UserID=user_id)
             phone = querylist.get('phone')
-            if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
+            try:
+                if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
+                    return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
+            except:
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
             else:
                 user.Phone=phone
@@ -379,8 +382,6 @@ def Manage_User(request):
         querylist = request.POST
         function_id = querylist.get('function_id')
         if function_id == '9':  # 修改资料
-            # TODO 不修改就保持原样
-            # TODO 协商详细修改项
             user_id = querylist.get('user_id')
             user = User.objects.get(UserID=user_id)
             name = querylist.get('name')
@@ -391,15 +392,21 @@ def Manage_User(request):
             address = house.Address'''
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
-            user.Phone = phone
-            user.Username = name
-            user.City = city
+            if phone is not '':
+                user.Phone = phone
+            if name is not '':
+                user.Username = name
+            if city is not '':
+                user.City = city
             user.save()
             return JsonResponse({'errornumber': 0, 'message': "租客信息更改成功"})
         elif function_id == '10':  # 删除
-            user_id = querylist.get('user_id')
-            User.objects.get(UserID=user_id).delete()
-            return JsonResponse({'errornumber': 0, 'message': "租客删除成功"})
+            try:
+                user_id = querylist.get('user_id')
+                User.objects.get(UserID=user_id).delete()
+                return JsonResponse({'errornumber': 0, 'message': "租客删除成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "租客删除失败"})
         elif function_id == '11': # 搜索
             user_name = querylist.get('user_name')
             try:
@@ -459,33 +466,39 @@ def Manage_House(request):
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '11':  # 下架房源(删除）
-            house_id = querylist.get('house_id')
-            House.objects.get(HouseID=house_id).delete()
-            return JsonResponse({'errornumber': 0, 'message': "下架成功"})
+            try:
+                house_id = querylist.get('house_id')
+                House.objects.get(HouseID=house_id).delete()
+                return JsonResponse({'errornumber': 0, 'message': "下架成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "下架失败"})
         elif function_id == '12':  # 新增房源
-            id = querylist.get('house_id')
-            house = House(
-                HouseID=querylist.get('house_id'),
-                Housename=querylist.get('house_name'),
-                LandlordPhone=querylist.get('phone'),
-                LandlordName=querylist.get('landlord_name'),
-                Address=querylist.get('address'),
-                Type=querylist.get('type'),
-                Rent=querylist.get('rent'),
-                City=querylist.get('city'),
-                Housetype=querylist.get('house_type'),
-                Mark=querylist.get('mark'),
-                Area=querylist.get('area'),
-                Floor=querylist.get('floor'),
-            )
-            house.save()
-            piclist = querylist.get('pic_path_list')
-            for path in piclist:
-                pic = Picture(PicPath=path, HouseID=id)
-                pic.save()
-                newpic = Picture(HouseID=id, PicID=pic.PicID, PicPath=pic.PicPath)
-                newpic.save()
-            return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            try:
+                id = querylist.get('house_id')
+                house = House(
+                    HouseID=querylist.get('house_id'),
+                    Housename=querylist.get('house_name'),
+                    LandlordPhone=querylist.get('phone'),
+                    LandlordName=querylist.get('landlord_name'),
+                    Address=querylist.get('address'),
+                    Type=querylist.get('type'),
+                    Rent=querylist.get('rent'),
+                    City=querylist.get('city'),
+                    Housetype=querylist.get('house_type'),
+                    Mark=querylist.get('mark'),
+                    Area=querylist.get('area'),
+                    Floor=querylist.get('floor'),
+                )
+                house.save()
+                piclist = querylist.get('pic_path_list')
+                for path in piclist:
+                    pic = Picture(PicPath=path, HouseID=id)
+                    pic.save()
+                    newpic = Picture(HouseID=id, PicID=pic.PicID, PicPath=pic.PicPath)
+                    newpic.save()
+                return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "添加失败"})
         else:
             return admin_sidebar(request)
     else:
@@ -500,7 +513,6 @@ def Manage_RM(request):
         if function_id == '9':  # 师傅搜索
             worker_name = querylist.get('worker_name')
             workers = User.objects.filter(Username__contains=worker_name)
-            # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
             workerlist = []
             for worker in workers:
                 workerlist.append({
@@ -511,21 +523,27 @@ def Manage_RM(request):
                 })
             return JsonResponse({'workerlist': workerlist})
         elif function_id == '10':  # 删除师傅
-            worker_id = querylist.get('worker_id')
-            User.objects.get(UserID=worker_id).delete()
-            return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            try:
+                worker_id = querylist.get('worker_id')
+                User.objects.get(UserID=worker_id).delete()
+                return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "删除失败"})
         elif function_id == '11':  # 添加师傅
-            id = querylist.get('worker_id')
-            worker = User(
-                UserID=querylist.get('id'),
-                Username=querylist.get('name'),
-                Status='S',
-                Phone=querylist.get('phone'),
-                Password=querylist.get('password'),
-                City=querylist.get('city')
-            )
-            worker.save()
-            return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            try:
+                id = querylist.get('worker_id')
+                worker = User(
+                    UserID=querylist.get('id'),
+                    Username=querylist.get('name'),
+                    Status='S',
+                    Phone=querylist.get('phone'),
+                    Password=querylist.get('password'),
+                    City=querylist.get('city')
+                )
+                worker.save()
+                return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "添加失败"})
         else:
             return admin_sidebar(request)
     else:
@@ -537,7 +555,7 @@ def Manage_Contract(request):
     if request.method == 'POST':
         querylist = request.POST
         function_id = querylist.get('function_id')
-        if function_id == '9':#搜索合同 基于用户名
+        if function_id == '9':  # 搜索合同 基于用户名
             name = querylist.get('name')
             users = User.objects.filter(Username__contains=name)
             contracts = []
@@ -569,12 +587,15 @@ def Manage_Contract(request):
             path = contract.FilePath
             return JsonResponse({'path': path})
         if function_id == '11': #delete
-            contract_id = querylist.get('contract_id')
-            contract = Contract.objects.get(ContractID=contract_id)
-            contract.delete()
-            order = Order.objects.get(OrderID=contract.OrderID)
-            order.delete()
-            return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            try:
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
+                contract.delete()
+                order = Order.objects.get(OrderID=contract.OrderID)
+                order.delete()
+                return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "删除失败"})
         else:
             return admin_sidebar(request)
     else:
@@ -614,12 +635,15 @@ def UnManaged_Contract(request):
             return JsonResponse({'contract_list': contract_list})
         elif function_id == '12':   # 审查合同
             result = querylist.get('result')
-            if result == '1':
-                contract_id = querylist.get('contract_id')
-                contract = Contract.objects.get(ContractID=contract_id)
-                contract.Passed = True
-                contract.save()
-            return JsonResponse({'errornumber': 0, 'message': "审查成功"})
+            try:
+                if result == '1':
+                    contract_id = querylist.get('contract_id')
+                    contract = Contract.objects.get(ContractID=contract_id)
+                    contract.Passed = True
+                    contract.save()
+                return JsonResponse({'errornumber': 0, 'message': "审查成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "审查失败"})
         elif function_id < '9':
             return admin_sidebar(request)
         else:
@@ -753,7 +777,10 @@ def admin_sidebar(request):
         function_id = querylist.get('function_id')
         if function_id == '1': # 主页
             id = querylist.get('id')
-            user = User.objects.get(UserID=id)
+            try:
+                user = User.objects.get(UserID=id)
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "用户不存在"})
             try:
                 pic = Picture.objects.get(PicID=user.PicID)
                 path = pic.PicPath
@@ -787,12 +814,16 @@ def admin_sidebar(request):
             houselist = []
             for house in houses:
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
-                order = Order.objects.get(HouseID=house.HouseID)
-                user = User.objects.get(UserID=order.UserID)
+                try:
+                    order = Order.objects.get(HouseID=house.HouseID)
+                    user = User.objects.get(UserID=order.UserID)
+                    name = user.Username
+                except:
+                    name = ''
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
-                    'Landlordname': user.Username,
+                    'Landlordname': name,
                     'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
@@ -817,6 +848,7 @@ def admin_sidebar(request):
             works = Work.objects.filter(Status=True)  # 筛选未处理
             worklist = []
             for work in works:
+                # TODO
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(HouseID=house.HouseID)
@@ -847,6 +879,7 @@ def admin_sidebar(request):
             works = Work.objects.filter(Status=False)  # 筛选未处理
             worklist = []
             for work in works:
+                # TODO
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(HouseID=house.HouseID)
@@ -877,6 +910,7 @@ def admin_sidebar(request):
             contracts = Contract.objects.get(Passed=False)
             contract_list = []
             for contract in contracts:
+                # TODO
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
                 house = House.objects.get(HouseID=order.HouseID)
@@ -895,6 +929,7 @@ def admin_sidebar(request):
             contracts = Contract.objects.get(Passed=True)
             contract_list = []
             for contract in contracts:
+                # TODO
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
                 house = House.objects.get(HouseID=order.HouseID)
