@@ -719,6 +719,19 @@ def collection(request):
                     'HouseID': x.HouseID
                 })
             return JsonResponse({'houselist': houselist})
+        elif function_id == '7': # 搜索
+            house_name = querylist.get('house_name')
+            houses = House.objects.filter(Housename__contains=house_name)
+            houselist = []
+            for house in houses:
+                try:
+                    x = UserHouse.objects.get(HouseID=house.HouseID, UserID=user_id)
+                    houselist.append({
+                        'HouseID': x.HouseID
+                    })
+                except:
+                    continue
+            return JsonResponse({'houselist': houselist})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
