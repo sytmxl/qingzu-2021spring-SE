@@ -387,6 +387,7 @@ def Manage_User(request):
             name = querylist.get('name')
             phone = querylist.get('phone')
             city = querylist.get('city')
+            email = querylist.get('email')
             '''order = Order.objects.filter(UserID=user_id).latest()
             house = House.objects.get(HouseID=order.HouseID)
             address = house.Address'''
@@ -398,6 +399,8 @@ def Manage_User(request):
                 user.Username = name
             if city is not '':
                 user.City = city
+            if email is not '':
+                user.Email = email
             user.save()
             return JsonResponse({'errornumber': 0, 'message': "租客信息更改成功"})
         elif function_id == '10':  # 删除
