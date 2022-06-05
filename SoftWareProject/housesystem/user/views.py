@@ -157,7 +157,7 @@ def RepairMan_SelfInfo(request):
                 user.Password=new_password1
                 user.save()
                 return JsonResponse({'errornumber': 0, 'message': "用户密码更改成功"})
-        elif funtcion_id == '7': #修改邮箱
+        elif function_id == '7': #修改邮箱
             email = querylist.get('email')
             if (re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$",email) == None):  # // 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
                 return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
@@ -1010,7 +1010,8 @@ def admin_sidebar(request):
                     'name': worker.Username,
                     'id': worker.UserID,
                     'city': worker.City,
-                    'phone': worker.Phone
+                    'phone': worker.Phone,
+                    'email': worker.Email
                 })
             return JsonResponse({'worker_list': worker_list})
         elif function_id == '5':    # 已处理申诉
