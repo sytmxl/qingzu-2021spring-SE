@@ -331,13 +331,13 @@ def Commander_FirstPage(request):
                 user.save()
 
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
-        elif function_id == '10':  # 修改电话
-            user_id = querylist.get('user_id')
-            user = User.objects.get(UserID=user_id)
+        elif function_id == '10': #修改电话
             phone = querylist.get('phone')
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
             else:
+                user.Phone=phone
+                user.save()
                 return JsonResponse({'errornumber': 0, 'message': "手机号更改成功"})
         elif function_id == '11':  # 修改密码
             user_id = querylist.get('user_id')
@@ -785,9 +785,12 @@ def admin_sidebar(request):
             houselist = []
             for house in houses:
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
+                order = Order.objects.get(HouseID=house.HouseID)
+                user = User.objects.get(UserID=order.UserID)
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
+                    'Landlordname': user.Username,
                     'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
