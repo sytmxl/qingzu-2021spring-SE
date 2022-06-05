@@ -407,7 +407,7 @@ def Manage_User(request):
                 return JsonResponse({'errornumber': 0, 'message': "租客删除成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "租客删除失败"})
-        elif function_id == '11': # 搜索
+        elif function_id == '11': # 用户名搜索
             user_name = querylist.get('user_name')
             try:
                 users = User.objects.filter(Username__contains=user_name)
@@ -427,6 +427,24 @@ def Manage_User(request):
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该用户"})
             return JsonResponse({'userlist': userlist})
+        elif function_id == '12':   # id 搜索
+            id = querylist.get('id')
+            try:
+                user = User.objects.get(UserID=id)
+                return JsonResponse({
+                    'UserID': user.UserID,
+                    'Email': user.Email,
+                    'Phone': user.Phone,
+                    'City': user.City,
+                    'Username': user.Username,
+                    'ID': user.ID,
+                    'Introduction': user.Introduction,
+                    'Job': user.Job,
+                    'Password': user.Password,
+                    'Login': user.Login
+                    })
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该用户"})
         else:
             return admin_sidebar(request)
     else:
@@ -465,6 +483,22 @@ def Manage_House(request):
                     'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
+        elif function_id == '13':   # id search
+            id = querylist.get('id')
+            try:
+                house = House.objects.get(HouseID=id)
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
+                return JsonResponse({
+                    'HouseID': house.HouseID,
+                    'Housename': house.Housename,
+                    'Floor': house.Floor,
+                    'Rent': house.Rent,
+                    'Type': house.Type,
+                    'Area': house.Area,
+                    'PicPathList': list(pics)
+                })
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该房源"})
         elif function_id == '11':  # 下架房源(删除）
             try:
                 house_id = querylist.get('house_id')
@@ -522,6 +556,18 @@ def Manage_RM(request):
                     'place': worker.City
                 })
             return JsonResponse({'workerlist': workerlist})
+        elif function_id == '12':   # id search
+            id = querylist.get('id')
+            try:
+                worker = User.objects.get(UserID=id)
+                return JsonResponse({
+                    'workerID': worker.UserID,
+                    'workername': worker.Username,
+                    'phone': worker.Phone,
+                    'place': worker.City
+                })
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该师傅"})
         elif function_id == '10':  # 删除师傅
             try:
                 worker_id = querylist.get('worker_id')
@@ -581,6 +627,28 @@ def Manage_Contract(request):
                     'rent': house.Rent,
                 })
             return JsonResponse({'contract_list': contract_list})
+        elif function_id == '12':   # id 搜索
+            id = querylist.get('id')
+            try:
+                contract = Contract.objects.get(ContractID=id)
+                if contract.Passed:  # status
+                    order = Order.objects.get(OrderID=contract.OrderID)
+                    user = User.objects.get(UserID=order.UserID)
+                    house = House.objects.get(HouseID=order.HouseID)
+                    return JsonResponse({
+                        'contract_id': contract.ContractID,
+                        'order_id': order.OrderID,
+                        'path': contract.FilePath,
+                        'user_id': user.UserID,
+                        'house_id': house.HouseID,
+                        'user_name': user.Username,
+                        'address': house.Address,
+                        'rent': house.Rent,
+                    })
+                else:
+                    return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
         if function_id == '10': #查看合同
             contract_id = querylist.get('contract_id')
             contract = Contract.objects.get(ContractID=contract_id)
@@ -596,6 +664,7 @@ def Manage_Contract(request):
                 return JsonResponse({'errornumber': 0, 'message': "删除成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "删除失败"})
+
         else:
             return admin_sidebar(request)
     else:
@@ -615,7 +684,7 @@ def UnManaged_Contract(request):
                 orders = Order.objects.filter(UserID=user.UserID)
                 for order in orders:
                     contract = Contract.objects.get(OrderID=order.OrderID)
-                    if not contract.Passed:
+                    if not contract.Passed: # status
                         contracts.append(contract)
             contract_list = []
             for contract in contracts:
@@ -633,6 +702,28 @@ def UnManaged_Contract(request):
                     'rent': house.Rent,
                 })
             return JsonResponse({'contract_list': contract_list})
+        elif function_id == '13':   # id 搜索
+            id = querylist.get('id')
+            try:
+                contract = Contract.objects.get(ContractID=id)
+                if not contract.Passed:  # status
+                    order = Order.objects.get(OrderID=contract.OrderID)
+                    user = User.objects.get(UserID=order.UserID)
+                    house = House.objects.get(HouseID=order.HouseID)
+                    return JsonResponse({
+                        'contract_id': contract.ContractID,
+                        'order_id': order.OrderID,
+                        'path': contract.FilePath,
+                        'user_id': user.UserID,
+                        'house_id': house.HouseID,
+                        'user_name': user.Username,
+                        'address': house.Address,
+                        'rent': house.Rent,
+                    })
+                else:
+                    return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该合同"})
         elif function_id == '12':   # 审查合同
             result = querylist.get('result')
             try:
@@ -693,6 +784,39 @@ def Manage_Complain(request):
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
+        elif function_id == '13':   # id search
+            id = querylist.get('id')
+            try:
+                work = Work.objects.get(WorkID=id)
+                if not work.Status: # status = false
+                    user = User.objects.get(UserID=work.UserID)
+                    house = House.objects.get(HouseID=work.HouseID)
+                    order = Order.objects.get(HouseID=house.HouseID)
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    return JsonResponse({
+                        'Datetime': work.Datetime,
+                        'WorkID': work.WorkID,
+                        'HouseID': work.HouseID,
+                        'UserID': work.UserID,
+                        'Username': user.Username,
+                        'Phone': user.Phone,
+                        'Address': house.Address,
+                        'Housename': house.Housename,
+                        'Rent': house.Rent,
+                        'Housetype': house.Housetype,
+                        'Area': house.Area,
+                        'Floor': house.Floor,
+                        'Type': house.Type,
+                        'LandlordPhone': house.LandlordPhone,
+                        'OrderDate': order.OrderDate.date(),
+                        'DueDate': order.DueDate.date(),
+                        'Introduction': house.Introduction,
+                        'ComplainPic': picture.PicPath,
+                        'ComplainText': work.Description
+                    })
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
         elif function_id == '10':   # 返回空闲师傅
             workers = User.objects.filter(Status='S', WorkID='')
             worker_list = []
@@ -765,6 +889,39 @@ def Managed_Complain(request):
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
+        elif function_id == '10':   # id search
+            id = querylist.get('id')
+            try:
+                work = Work.objects.get(WorkID=id)
+                if work.Status: # status = ture
+                    user = User.objects.get(UserID=work.UserID)
+                    house = House.objects.get(HouseID=work.HouseID)
+                    order = Order.objects.get(HouseID=house.HouseID)
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    return JsonResponse({
+                        'Datetime': work.Datetime,
+                        'WorkID': work.WorkID,
+                        'HouseID': work.HouseID,
+                        'UserID': work.UserID,
+                        'Username': user.Username,
+                        'Phone': user.Phone,
+                        'Address': house.Address,
+                        'Housename': house.Housename,
+                        'Rent': house.Rent,
+                        'Housetype': house.Housetype,
+                        'Area': house.Area,
+                        'Floor': house.Floor,
+                        'Type': house.Type,
+                        'LandlordPhone': house.LandlordPhone,
+                        'OrderDate': order.OrderDate.date(),
+                        'DueDate': order.DueDate.date(),
+                        'Introduction': house.Introduction,
+                        'ComplainPic': picture.PicPath,
+                        'ComplainText': work.Description
+                    })
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
         else:
             return admin_sidebar(request)
     else:
