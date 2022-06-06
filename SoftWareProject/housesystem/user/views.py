@@ -774,7 +774,10 @@ def Manage_Complain(request):
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
-                order = Order.objects.get(HouseID=house.HouseID)
+                orders = Order.objects.filter(HouseID=house.HouseID)
+                for o in orders:
+                    order = o
+                    break
                 picture = Picture.objects.get(WorkID=work.WorkID)
                 worklist.append({
                     'Datetime': work.Datetime,
@@ -806,7 +809,10 @@ def Manage_Complain(request):
                 if not work.Status: # status = false
                     user = User.objects.get(UserID=work.UserID)
                     house = House.objects.get(HouseID=work.HouseID)
-                    order = Order.objects.get(HouseID=house.HouseID)
+                    orders = Order.objects.filter(HouseID=house.HouseID)
+                    for o in orders:
+                        order = o
+                        break
                     picture = Picture.objects.get(WorkID=work.WorkID)
                     return JsonResponse({
                         'Datetime': work.Datetime,
@@ -899,7 +905,10 @@ def Managed_Complain(request):
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
-                order = Order.objects.get(HouseID=house.HouseID)
+                orders = Order.objects.filter(HouseID=house.HouseID)
+                for o in orders:
+                    order = o
+                    break
                 picture = Picture.objects.get(WorkID=work.WorkID)
                 worklist.append({
                     'Datetime': work.Datetime,
@@ -931,7 +940,10 @@ def Managed_Complain(request):
                 if work.Status: # status = ture
                     user = User.objects.get(UserID=work.UserID)
                     house = House.objects.get(HouseID=work.HouseID)
-                    order = Order.objects.get(HouseID=house.HouseID)
+                    orders = Order.objects.filter(HouseID=house.HouseID)
+                    for o in orders:
+                        order = o
+                        break
                     picture = Picture.objects.get(WorkID=work.WorkID)
                     return JsonResponse({
                         'Datetime': work.Datetime,
