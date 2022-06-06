@@ -805,38 +805,36 @@ def Manage_Complain(request):
         elif function_id == '13':   # id search
             id = querylist.get('id')
             try:
-                work = Work.objects.get(WorkID=id)
-                if not work.Status: # status = false
-                    user = User.objects.get(UserID=work.UserID)
-                    house = House.objects.get(HouseID=work.HouseID)
-                    orders = Order.objects.filter(HouseID=house.HouseID)
-                    for o in orders:
-                        order = o
-                        break
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    return JsonResponse({
-                        'Datetime': work.Datetime,
-                        'WorkID': work.WorkID,
-                        'HouseID': work.HouseID,
-                        'UserID': work.UserID,
-                        'WorkerID': work.WorkerID,
-                        'Username': user.Username,
-                        'Phone': user.Phone,
-                        'Address': house.Address,
-                        'Housename': house.Housename,
-                        'Rent': house.Rent,
-                        'Housetype': house.Housetype,
-                        'Area': house.Area,
-                        'Floor': house.Floor,
-                        'Type': house.Type,
-                        'LandlordPhone': house.LandlordPhone,
-                        'OrderDate': order.OrderDate.date(),
-                        'DueDate': order.DueDate.date(),
-                        'Introduction': house.Introduction,
-                        'ComplainPic': picture.PicPath,
-                        'ComplainText': work.Description
-                    })
-                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
+                work = Work.objects.get(WorkID=id, Status=False)
+                user = User.objects.get(UserID=work.UserID)
+                house = House.objects.get(HouseID=work.HouseID)
+                orders = Order.objects.filter(HouseID=house.HouseID)
+                for o in orders:
+                    order = o
+                    break
+                picture = Picture.objects.get(WorkID=work.WorkID)
+                return JsonResponse({
+                    'Datetime': work.Datetime,
+                    'WorkID': work.WorkID,
+                    'HouseID': work.HouseID,
+                    'UserID': work.UserID,
+                    'WorkerID': work.WorkerID,
+                    'Username': user.Username,
+                    'Phone': user.Phone,
+                    'Address': house.Address,
+                    'Housename': house.Housename,
+                    'Rent': house.Rent,
+                    'Housetype': house.Housetype,
+                    'Area': house.Area,
+                    'Floor': house.Floor,
+                    'Type': house.Type,
+                    'LandlordPhone': house.LandlordPhone,
+                    'OrderDate': order.OrderDate.date(),
+                    'DueDate': order.DueDate.date(),
+                    'Introduction': house.Introduction,
+                    'ComplainPic': picture.PicPath,
+                    'ComplainText': work.Description
+                })
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
         elif function_id == '10':   # 返回空闲师傅
@@ -936,38 +934,36 @@ def Managed_Complain(request):
         elif function_id == '10':   # id search
             id = querylist.get('id')
             try:
-                work = Work.objects.get(WorkID=id)
-                if work.Status: # status = ture
-                    user = User.objects.get(UserID=work.UserID)
-                    house = House.objects.get(HouseID=work.HouseID)
-                    orders = Order.objects.filter(HouseID=house.HouseID)
-                    for o in orders:
-                        order = o
-                        break
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    return JsonResponse({
-                        'Datetime': work.Datetime,
-                        'WorkID': work.WorkID,
-                        'HouseID': work.HouseID,
-                        'UserID': work.UserID,
-                        'WorkerID': work.WorkerID,
-                        'Username': user.Username,
-                        'Phone': user.Phone,
-                        'Address': house.Address,
-                        'Housename': house.Housename,
-                        'Rent': house.Rent,
-                        'Housetype': house.Housetype,
-                        'Area': house.Area,
-                        'Floor': house.Floor,
-                        'Type': house.Type,
-                        'LandlordPhone': house.LandlordPhone,
-                        'OrderDate': order.OrderDate.date(),
-                        'DueDate': order.DueDate.date(),
-                        'Introduction': house.Introduction,
-                        'ComplainPic': picture.PicPath,
-                        'ComplainText': work.Description
-                    })
-                return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
+                work = Work.objects.get(WorkID=id, Status=True)
+                user = User.objects.get(UserID=work.UserID)
+                house = House.objects.get(HouseID=work.HouseID)
+                orders = Order.objects.filter(HouseID=house.HouseID)
+                for o in orders:
+                    order = o
+                    break
+                picture = Picture.objects.get(WorkID=work.WorkID)
+                return JsonResponse({
+                    'Datetime': work.Datetime,
+                    'WorkID': work.WorkID,
+                    'HouseID': work.HouseID,
+                    'UserID': work.UserID,
+                    'WorkerID': work.WorkerID,
+                    'Username': user.Username,
+                    'Phone': user.Phone,
+                    'Address': house.Address,
+                    'Housename': house.Housename,
+                    'Rent': house.Rent,
+                    'Housetype': house.Housetype,
+                    'Area': house.Area,
+                    'Floor': house.Floor,
+                    'Type': house.Type,
+                    'LandlordPhone': house.LandlordPhone,
+                    'OrderDate': order.OrderDate.date(),
+                    'DueDate': order.DueDate.date(),
+                    'Introduction': house.Introduction,
+                    'ComplainPic': picture.PicPath,
+                    'ComplainText': work.Description
+                })
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
         else:
