@@ -855,16 +855,17 @@ def Manage_Complain(request):
                 work_id = querylist.get('work_id')
             except:
                 return JsonResponse({'errornumber': 1, 'message': "获取工单错误"})
-
             try:
                 print('多个数据')
                 for worker_id in worker_id_list:
                     worker = User.objects.get(UserID=int(worker_id))
                     worker.WorkID = work_id
+                    worker.save()
             except:
                 print('单个数据')
                 worker = User.objects.get(UserID=int(worker_id_list))
                 worker.WorkID = work_id
+                worker.save()
             return JsonResponse({'errornumber': 0, 'message': "分配师傅成功"})
         elif function_id == '12':  # 提交留言
             work_id = querylist.get('work_id')
