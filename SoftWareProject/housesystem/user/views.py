@@ -747,11 +747,15 @@ def UnManaged_Contract(request):
         elif function_id == '12':   # 审查合同
             result = querylist.get('result')
             try:
+
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
                 if result == '1':
-                    contract_id = querylist.get('contract_id')
-                    contract = Contract.objects.get(ContractID=contract_id)
-                    contract.Passed = True
-                    contract.save()
+                    contract.Result= True
+                else:
+                    contract.Result = False
+                contract.Passed = True
+                contract.save()
                 return JsonResponse({'errornumber': 0, 'message': "审查成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "审查失败"})
