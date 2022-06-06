@@ -801,6 +801,7 @@ def information(request):
                 return JsonResponse({'errornumber': 0, 'message': "短租成功！",'order_id':new_order.OrderID})
         elif function_id == '6': #长租
             house_id = querylist.get('house_id')
+            flag = querylist.get('flag')
             house = House.objects.get(HouseID=house_id)
             house.Status = True
             house.save()
@@ -808,13 +809,16 @@ def information(request):
             month = int(querylist.get('month'))
             price = house.Rent*month
             finish_day = start_day + datetime.timedelta(days=month*30)
-            new_order = Order(OrderDate = start_day,DueDate = finish_day,Price=price,Pay=False,UserID=user_id,HouseID=house_id)
-            new_order.save()
-            filepath = querylist.get('filepath')
-            order_id = Order.objects.get(HouseID=house_id).OrderID
-            new_contract = Contract(OrderID=order_id,FilePath=filepath)
-            new_contract.save()
-            return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
+            if flag == '1':
+                return JsonResponse({'Username': user.Username, 'Landlordname':house.LandlordName , 'Address': house.Address , 'Area':house.Area , 'Month':month , 'start_day':start_day , 'finish_day':finish_day})
+            elif flag == '2':
+                new_order = Order(OrderDate = start_day,DueDate = finish_day,Price=price,Pay=False,UserID=user_id,HouseID=house_id)
+                new_order.save()
+                filepath = querylist.get('filepath')
+                order_id = Order.objects.get(HouseID=house_id).OrderID
+                new_contract = Contract(OrderID=order_id,FilePath=filepath)
+                new_contract.save()
+                return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
         elif function_id == '7': #自动生成合同
             username = querylist.get('username')
             landlordname = querylist.get('landlordname')
