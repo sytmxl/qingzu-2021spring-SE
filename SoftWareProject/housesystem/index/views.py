@@ -481,7 +481,7 @@ def service(request):
             work = Work.objects.get(WorkID=work_id)
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
-            order = Order.objects.get(HouseID=house_id)
+            order = Order.objects.get(OrderID=work.OrderID)
             picture = Picture.objects.get(WorkID=work_id)
             return JsonResponse({'HouseID':house.HouseID,
                                  'Housename':house.Housename,

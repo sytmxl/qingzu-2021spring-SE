@@ -27,6 +27,7 @@ class Order(models.Model):
 
 class User(models.Model):
     UserID = models.AutoField(primary_key=True,null=False)
+    PicID = models.IntegerField(null=True)
     Email = models.CharField(max_length=255,null=False)
     Username = models.CharField(max_length=255,null=False)
     Password = models.CharField(max_length=255,null=False)
