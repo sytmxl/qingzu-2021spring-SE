@@ -809,7 +809,11 @@ def Manage_Complain(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                picture = Picture.objects.get(WorkID=work.WorkID)
+                try:
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    path = picture.PicPath
+                except:
+                    path = ''
                 return JsonResponse({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -829,7 +833,7 @@ def Manage_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': path,
                     'ComplainText': work.Description
                 })
             except:
@@ -935,7 +939,11 @@ def Managed_Complain(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                picture = Picture.objects.get(WorkID=work.WorkID)
+                try:
+                    picture = Picture.objects.get(WorkID=work.WorkID)
+                    path = picture.PicPath
+                except:
+                    path = ''
                 return JsonResponse({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -955,7 +963,7 @@ def Managed_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': path,
                     'ComplainText': work.Description
                 })
             except:
@@ -1046,10 +1054,7 @@ def admin_sidebar(request):
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
-                orders = Order.objects.filter(HouseID=house.HouseID)
-                for o in orders:
-                    order = o
-                    break
+                order = Order.objects.get(OrderID=work.OrderID)
                 try:
                     picture = Picture.objects.get(WorkID=work.WorkID)
                     path = picture.PicPath
@@ -1084,10 +1089,7 @@ def admin_sidebar(request):
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
-                orders = Order.objects.filter(HouseID=house.HouseID)
-                for o in orders:
-                    order = o
-                    break
+                order = Order.objects.get(OrderID=work.OrderID)
                 try:
                     picture = Picture.objects.get(WorkID=work.WorkID)
                     path = picture.PicPath
