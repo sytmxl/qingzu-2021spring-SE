@@ -51,6 +51,7 @@ class Work(models.Model):
     Status = models.BooleanField(null=False,default=False)
     Admincomment = models.TextField(null=True)
     Workercomment = models.TextField(null=True)
+    OrderID = models.IntegerField(null=True)
 
 class UserHouse(models.Model):
     UserID = models.IntegerField(null=False)

@@ -290,9 +290,10 @@ def order(request):
                 })
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '7': #订单详情
-            house_id = querylist.get('house_id')
+            order_id = querylist.get('order_id')
+            order = Order.objects.get(OrderID=order_id,Pay=True)
+            house_id = order.HouseID
             house = House.objects.get(HouseID=house_id)
-            order = Order.objects.get(HouseID=house_id,Pay=True)
             return JsonResponse({'Mark':house.Mark,
                                  'HouseID':house.HouseID,
                                  'Housename':house.Housename,
@@ -426,7 +427,7 @@ def service(request):
                 y=House.objects.get(HouseID=x.HouseID)
                 worklist.append({
                     'Datetime':x.Datetime,
-                    'WorkID':x.WorkID,
+                    'OrderID':x.OrderID,
                     'Address':y.Address
                 })
             return JsonResponse({'worklist': worklist})
@@ -437,7 +438,7 @@ def service(request):
                 y=House.objects.get(HouseID=x.HouseID)
                 worklist.append({
                     'Datetime':x.Datetime,
-                    'WorkID':x.WorkID,
+                    'OrderID':x.OrderID,
                     'Address':y.Address
                 })
             return JsonResponse({'worklist': worklist})
@@ -531,7 +532,7 @@ def service(request):
             house_id = order.HouseID
             description = querylist.get('description')
             picpath = querylist.get('picpath')
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id)
             new_work.save()
             work = Work.objects.get(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
             new_picture = Picture(PicPath=picpath, HouseID=house_id, WorkID=work.WorkID)
@@ -791,9 +792,9 @@ def information(request):
             start_day = datetime.datetime.strptime(querylist.get('start_day'), '%Y-%m-%d').date()
             finish_day = datetime.datetime.strptime(querylist.get('finish_day'), '%Y-%m-%d').date()
             day = (finish_day-start_day).days
-            price = house.Rent*day
+            price = house.Rent/30*day
             if flag == '1':
-                return JsonResponse({'dayrent': house.Rent, 'day':day , 'price': price})
+                return JsonResponse({'dayrent': house.Rent/30, 'day':day , 'price': price})
             elif flag == '2':
                 new_order = Order(OrderDate = start_day , DueDate = finish_day , Price=price , Pay=True , UserID=user_id , HouseID=house_id)
                 new_order.save()
@@ -804,9 +805,9 @@ def information(request):
             house.Status = True
             house.save()
             start_day = datetime.datetime.strptime(querylist.get('start_day'), '%Y-%m-%d').date()
-            finish_day = datetime.datetime.strptime(querylist.get('finish_day'), '%Y-%m-%d').date()
-            day = (finish_day-start_day).days
-            price = house.Rent*day
+            month = int(querylist.get('month'))
+            price = house.Rent*month
+            finish_day = start_day + datetime.timedelta(days=month*30)
             new_order = Order(OrderDate = start_day,DueDate = finish_day,Price=price,Pay=False,UserID=user_id,HouseID=house_id)
             new_order.save()
             filepath = querylist.get('filepath')
