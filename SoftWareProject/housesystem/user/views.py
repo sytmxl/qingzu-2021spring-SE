@@ -899,7 +899,7 @@ def Managed_Complain(request):
             for user in users:
                 work = Work.objects.filter(UserID=user.UserID)
                 for w in work:
-                    if w.Status is False:
+                    if w.Status is True:
                         works.append(w)
             worklist = []
             for work in works:
