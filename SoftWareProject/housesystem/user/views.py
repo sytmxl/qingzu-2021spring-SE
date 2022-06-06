@@ -697,13 +697,19 @@ def UnManaged_Contract(request):
             for user in users:
                 orders = Order.objects.filter(UserID=user.UserID)
                 for order in orders:
+                    print("order: ")
+                    print(order.OrderID)
                     contract = Contract.objects.get(OrderID=order.OrderID)
+                    print("contract: ")
+                    print(contract.ContractID)
                     if not contract.Passed: # status
                         contracts.append(contract)
             contract_list = []
             for contract in contracts:
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
+                print("order.HouseID:")
+                print(order.HouseID)
                 house = House.objects.get(HouseID=order.HouseID)
                 contract_list.append({
                     'contract_id': contract.ContractID,
