@@ -1050,6 +1050,7 @@ def admin_sidebar(request):
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
                     'Landlordname': name,
+                    'Address': house.Address,
                     'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
