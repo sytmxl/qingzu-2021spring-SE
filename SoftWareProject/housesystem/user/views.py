@@ -834,7 +834,7 @@ def Manage_Complain(request):
             except:
                 return JsonResponse({'errornumber': 1, 'message': "搜索失败，无该工单"})
         elif function_id == '10':   # 返回空闲师傅
-            workers = User.objects.filter(Status='S', WorkID='')
+            workers = User.objects.filter(Status='S', WorkID=0)
             worker_list = []
             for worker in workers:
                 worker_list.append({
