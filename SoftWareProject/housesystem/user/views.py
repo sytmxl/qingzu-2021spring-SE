@@ -538,7 +538,6 @@ def Manage_House(request):
                     Rent=querylist.get('rent'),
                     City=querylist.get('city'),
                     Housetype=querylist.get('house_type'),
-                    Mark=querylist.get('mark'),
                     Area=querylist.get('area'),
                     Floor=querylist.get('floor'),
                 )
