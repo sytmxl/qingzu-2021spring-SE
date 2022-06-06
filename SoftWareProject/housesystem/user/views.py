@@ -843,11 +843,11 @@ def Manage_Complain(request):
                 })
             return JsonResponse({'worker_list': worker_list})
         elif function_id == '11':   # 分配师傅
-            worker_id_list = querylist.getlist('worker_id_list')
-            print(worker_id_list)
+            worker_id_list = querylist.get('worker_id_list')
+            worker_id_list = worker_id_list.split()
             work_id = querylist.get('work_id')
             for worker_id in worker_id_list:
-                worker = User.objects.get(UserID=worker_id)
+                worker = User.objects.get(UserID=int(worker_id))
                 worker.WorkID = work_id
             return JsonResponse({'errornumber': 0, 'message': "分配师傅成功"})
         elif function_id == '12':  # 提交留言
