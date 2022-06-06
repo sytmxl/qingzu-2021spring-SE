@@ -804,14 +804,19 @@ def Manage_Complain(request):
             return JsonResponse({'worklist': worklist})
         elif function_id == '13':   # id search
             id = querylist.get('id')
+            print('id:'+id)
             try:
                 work = Work.objects.get(WorkID=id, Status=False)
                 user = User.objects.get(UserID=work.UserID)
+                print(1)
                 house = House.objects.get(HouseID=work.HouseID)
+                print(2)
                 orders = Order.objects.filter(HouseID=house.HouseID)
+                print(3)
                 for o in orders:
                     order = o
                     break
+                print(4)
                 picture = Picture.objects.get(WorkID=work.WorkID)
                 return JsonResponse({
                     'Datetime': work.Datetime,
