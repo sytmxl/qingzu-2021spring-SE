@@ -2,8 +2,6 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from sendemail import *
-from threading import Thread
 
 
 def main():
