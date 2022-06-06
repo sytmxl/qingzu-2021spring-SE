@@ -755,10 +755,23 @@ def UnManaged_Contract(request):
                 return JsonResponse({'errornumber': 0, 'message': "审查成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "审查失败"})
-        elif function_id < '9':
-            return admin_sidebar(request)
+        if function_id == '10': # 查看合同
+            contract_id = querylist.get('contract_id')
+            contract = Contract.objects.get(ContractID=contract_id)
+            path = contract.FilePath
+            return JsonResponse({'path': path})
+        if function_id == '11': # delete
+            try:
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
+                contract.delete()
+                order = Order.objects.get(OrderID=contract.OrderID)
+                order.delete()
+                return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "删除失败"})
         else:
-            return Manage_Contract(request)
+            return admin_sidebar(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
