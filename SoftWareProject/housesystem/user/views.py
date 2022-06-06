@@ -5,32 +5,41 @@ from django.views.decorators.csrf import csrf_exempt
 import re
 from .models import *
 from index.models import *
+from .sendemail import sendcode
 
 @csrf_exempt
 def Register(request):
     if request.method == 'POST':  # 判断请求方式是否为 POST（要求POST方式）
         querylist = request.POST
-        username = querylist.get('username')  # 获取请求数据
-        password_1 = querylist.get('password_1')
-        password_2 = querylist.get('password_2')
-        #phone = querylist.get('phone')
-        email = querylist.get('email')
-        if(re.match("^[A-Za-z0-9]+$",username)==None): # 任意长度的字符和数字组合
-            return JsonResponse({'errornumber': 2, 'message': "用户名格式错误:只能输入字母和数字的组合"})
-        elif(User.objects.filter(Username=username).exists() or User.objects.filter(Email=email).exists()):
-            return JsonResponse({'errornumber': 3, 'message': "用户名或邮箱已存在"})
-        elif(re.match("^[A-Za-z0-9]+$",password_1)==None): # 任意长度的字符和数字组合
-            return JsonResponse({'errornumber': 4, 'message': "密码格式错误：只能输入字母和数字的组合"})
-        elif(password_1 != password_2):
-            return JsonResponse({'errornumber': 5, 'message': "两次输入的密码不一致"})
-        #elif(re.match("^\d{11}$",phone)==None):   # 任意长度的字符和数字组合
-        #    return JsonResponse({'errornumber': 6, 'message': "手机号格式错误"})
-        elif(re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$",email)==None): #// 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
-            return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
+        function_id = querylist.get('function_id')
+        if function_id == '1':
+            email = querylist.get('email')
+            code = sendcode(email)
+            if code == 'X':
+                return JsonResponse({'errornumber': 8, 'message': "发送邮件失败"})
+            return JsonResponse({'errornumber': 0, 'code': code})
         else:
-            new_user = User(Username=username,Password=password_1,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
-            new_user.save()
-            return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID,'username':new_user.Username})
+            username = querylist.get('username')  # 获取请求数据
+            password_1 = querylist.get('password_1')
+            password_2 = querylist.get('password_2')
+            #phone = querylist.get('phone')
+            email = querylist.get('email')
+            if(re.match("^[A-Za-z0-9]+$",username)==None): # 任意长度的字符和数字组合
+                return JsonResponse({'errornumber': 2, 'message': "用户名格式错误:只能输入字母和数字的组合"})
+            elif(User.objects.filter(Username=username).exists() or User.objects.filter(Email=email).exists()):
+                return JsonResponse({'errornumber': 3, 'message': "用户名或邮箱已存在"})
+            elif(re.match("^[A-Za-z0-9]+$",password_1)==None): # 任意长度的字符和数字组合
+                return JsonResponse({'errornumber': 4, 'message': "密码格式错误：只能输入字母和数字的组合"})
+            elif(password_1 != password_2):
+                return JsonResponse({'errornumber': 5, 'message': "两次输入的密码不一致"})
+            #elif(re.match("^\d{11}$",phone)==None):   # 任意长度的字符和数字组合
+            #    return JsonResponse({'errornumber': 6, 'message': "手机号格式错误"})
+            elif(re.match("^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$",email)==None): #// 非下划线的单词字符 + 2个以上单词字符 + @ + 2位以上单词字符域名 + .2位以上小写字母做域名后缀 + (.2位以上二重域名后缀)
+                return JsonResponse({'errornumber': 7, 'message': "邮箱格式错误"})
+            else:
+                new_user = User(Username=username,Password=password_1,Email=email,Status='Y') # Y代表用户，G代表管理员，S代表师傅
+                new_user.save()
+                return JsonResponse({'errornumber': 0, 'message': "注册成功",'user_id':new_user.UserID,'username':new_user.Username})
     else:
         return JsonResponse({'errornumber': 1, 'message': "请求方式错误"})
 
