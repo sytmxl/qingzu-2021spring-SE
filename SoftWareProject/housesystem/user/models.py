@@ -12,6 +12,7 @@ class Contract(models.Model):
     OrderID = models.IntegerField(null=False)
     FilePath = models.CharField(max_length=50,null=False)
     Passed = models.BooleanField(default=False) # 是否被管理员审核通过过
+    Result = models.BooleanField(default=False)     # 管理员审核结果
 
 class Order(models.Model):
     OrderID = models.AutoField(primary_key=True,null=False)

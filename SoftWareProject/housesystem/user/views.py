@@ -491,9 +491,13 @@ def Manage_House(request):
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
+                    'Landlordname': house.LandlordName,
+                    'Address': house.Address,
+                    'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
                     'Type': house.Type,
+                    'Housetype': house.Housetype,
                     'Area': house.Area,
                     'PicPathList': list(pics)
                 })
@@ -506,9 +510,13 @@ def Manage_House(request):
                 return JsonResponse({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
+                    'Landlordname': house.LandlordName,
+                    'Address': house.Address,
+                    'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
                     'Type': house.Type,
+                    'Housetype': house.Housetype,
                     'Area': house.Area,
                     'PicPathList': list(pics)
                 })
@@ -701,13 +709,19 @@ def UnManaged_Contract(request):
             for user in users:
                 orders = Order.objects.filter(UserID=user.UserID)
                 for order in orders:
+                    print("order: ")
+                    print(order.OrderID)
                     contract = Contract.objects.get(OrderID=order.OrderID)
+                    print("contract: ")
+                    print(contract.ContractID)
                     if not contract.Passed: # status
                         contracts.append(contract)
             contract_list = []
             for contract in contracts:
                 order = Order.objects.get(OrderID=contract.OrderID)
                 user = User.objects.get(UserID=order.UserID)
+                print("order.HouseID:")
+                print(order.HouseID)
                 house = House.objects.get(HouseID=order.HouseID)
                 contract_list.append({
                     'contract_id': contract.ContractID,
@@ -745,18 +759,35 @@ def UnManaged_Contract(request):
         elif function_id == '12':   # 审查合同
             result = querylist.get('result')
             try:
+
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
                 if result == '1':
-                    contract_id = querylist.get('contract_id')
-                    contract = Contract.objects.get(ContractID=contract_id)
-                    contract.Passed = True
-                    contract.save()
+                    contract.Result= True
+                else:
+                    contract.Result = False
+                contract.Passed = True
+                contract.save()
                 return JsonResponse({'errornumber': 0, 'message': "审查成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "审查失败"})
-        elif function_id < '9':
-            return admin_sidebar(request)
+        if function_id == '10': # 查看合同
+            contract_id = querylist.get('contract_id')
+            contract = Contract.objects.get(ContractID=contract_id)
+            path = contract.FilePath
+            return JsonResponse({'path': path})
+        if function_id == '11': # delete
+            try:
+                contract_id = querylist.get('contract_id')
+                contract = Contract.objects.get(ContractID=contract_id)
+                contract.delete()
+                order = Order.objects.get(OrderID=contract.OrderID)
+                order.delete()
+                return JsonResponse({'errornumber': 0, 'message': "删除成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "删除失败"})
         else:
-            return Manage_Contract(request)
+            return admin_sidebar(request)
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -1021,16 +1052,11 @@ def admin_sidebar(request):
             houselist = []
             for house in houses:
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
-                try:
-                    order = Order.objects.get(HouseID=house.HouseID)
-                    user = User.objects.get(UserID=order.UserID)
-                    name = user.Username
-                except:
-                    name = ''
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
-                    'Landlordname': name,
+                    'Landlordname': house.LandlordName,
+                    'Address': house.Address,
                     'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,

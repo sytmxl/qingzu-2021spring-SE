@@ -3,6 +3,9 @@ from time import sleep
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+from index.models import *
+from .models import *
+
 
 def send():
     # 第三方 SMTP 服务
@@ -28,6 +31,11 @@ def send():
         print("邮件发送成功")
     except smtplib.SMTPException:
         print("Error: 无法发送邮件")
+
+
+def check():
+    pass
+
 
 def everyday():
     while True:
