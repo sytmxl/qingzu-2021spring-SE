@@ -818,6 +818,7 @@ def Manage_Complain(request):
                     break
                 print(4)
                 picture = Picture.objects.get(WorkID=work.WorkID)
+                print(5)
                 return JsonResponse({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
