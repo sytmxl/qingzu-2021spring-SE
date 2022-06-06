@@ -328,7 +328,7 @@ def Commander_FirstPage(request):
             user = User.objects.get(UserID=user_id)
             pic_path = querylist.get('pic_path')
 
-            if user.PicID is not '':
+            if user.PicID != '':
                 pic = Picture.objects.get(PicID= user.PicID)
                 pic.PicPath = pic_path
                 pic.save()
@@ -401,13 +401,13 @@ def Manage_User(request):
             address = house.Address'''
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 3, 'message': "手机号格式错误"})
-            if phone is not '':
+            if phone != '':
                 user.Phone = phone
-            if name is not '':
+            if name != '':
                 user.Username = name
-            if city is not '':
+            if city != '':
                 user.City = city
-            if email is not '':
+            if email != '':
                 user.Email = email
             user.save()
             return JsonResponse({'errornumber': 0, 'message': "租客信息更改成功"})
@@ -1119,7 +1119,7 @@ def admin_sidebar(request):
                 })
             return JsonResponse({'worklist': worklist})
         elif function_id == '7':    # 待处理合同
-            contracts = Contract.objects.get(Passed=False)
+            contracts = Contract.objects.filter(Passed=False)
             contract_list = []
             for contract in contracts:
                 order = Order.objects.get(OrderID=contract.OrderID)
@@ -1137,7 +1137,7 @@ def admin_sidebar(request):
                 })
             return JsonResponse({'contract_list': contract_list})
         elif function_id == '8':    # 已处理合同
-            contracts = Contract.objects.get(Passed=True)
+            contracts = Contract.objects.filter(Passed=True)
             contract_list = []
             for contract in contracts:
                 order = Order.objects.get(OrderID=contract.OrderID)
