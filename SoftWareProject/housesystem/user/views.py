@@ -487,9 +487,13 @@ def Manage_House(request):
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
+                    'Landlordname': house.LandlordName,
+                    'Address': house.Address,
+                    'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
                     'Type': house.Type,
+                    'Housetype': house.Housetype,
                     'Area': house.Area,
                     'PicPathList': list(pics)
                 })
@@ -502,9 +506,13 @@ def Manage_House(request):
                 return JsonResponse({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
+                    'Landlordname': house.LandlordName,
+                    'Address': house.Address,
+                    'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
                     'Rent': house.Rent,
                     'Type': house.Type,
+                    'Housetype': house.Housetype,
                     'Area': house.Area,
                     'PicPathList': list(pics)
                 })
@@ -1040,16 +1048,10 @@ def admin_sidebar(request):
             houselist = []
             for house in houses:
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
-                try:
-                    order = Order.objects.get(HouseID=house.HouseID)
-                    user = User.objects.get(UserID=order.UserID)
-                    name = user.Username
-                except:
-                    name = ''
                 houselist.append({
                     'HouseID': house.HouseID,
                     'Housename': house.Housename,
-                    'Landlordname': name,
+                    'Landlordname': house.LandlordName,
                     'Address': house.Address,
                     'Phone': house.LandlordPhone,
                     'Floor': house.Floor,
