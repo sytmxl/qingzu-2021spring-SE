@@ -844,6 +844,7 @@ def Manage_Complain(request):
             return JsonResponse({'worker_list': worker_list})
         elif function_id == '11':   # 分配师傅
             worker_id_list = querylist.get('worker_id_list')
+            print(worker_id_list)
             work_id = querylist.get('work_id')
             for worker_id in worker_id_list:
                 worker = User.objects.get(UserID=worker_id)
