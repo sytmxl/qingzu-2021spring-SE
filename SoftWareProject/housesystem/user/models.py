@@ -30,7 +30,8 @@ class User(models.Model):
     Email = models.CharField(max_length=255,null=False)
     Username = models.CharField(max_length=255,null=False)
     Password = models.CharField(max_length=255,null=False)
-    PicID = models.CharField(max_length=255,null=True)
+    avatar = models.FileField(upload_to='',null=True) #用户头像文件字段
+    avatar_url = models.CharField(max_length=255,default='',null=True) #用户头像路由
     ID = models.CharField(max_length=18,null=True)
     Phone = models.CharField(max_length=11,null=True)
     Status = models.CharField(max_length=1,null=True)  # Y代表用户，G代表管理员，S代表师傅

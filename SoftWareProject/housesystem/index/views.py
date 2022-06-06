@@ -544,7 +544,7 @@ def service(request):
             UserID = querylist.get('id')
             Text = querylist.get('text')
             Username = querylist.get('name')
-            new_message = Message(Errornumber=Errornumber,UserID = UserID,Text = Text,Username = Username)
+            new_message = Message(Errornumber=Errornumber,UserID = UserID,Text = Text,Username = Username,WorkID=work_id)
             new_message.save()
             return JsonResponse({'errornumber': 1, 'message': "留言成功！"})
     else:

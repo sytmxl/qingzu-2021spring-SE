@@ -119,8 +119,12 @@ def user(request):
             user.Phone = querylist.get('Phone')
             user.City = querylist.get('City')
             user.Job = querylist.get('Job')
+            avatar = request.FILES.get('avatar')
+            suffix = '.' + avatar.name.split('.')[-1]
+            avatar.name = str(user_id)+'头像'+suffix
+            user.avatar= avatar
             user.save()
-            return JsonResponse({'PicID': user.PicID, 'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job})
+            return JsonResponse({'PicID': user.PicID, 'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job,'avatar':avatar.name})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
