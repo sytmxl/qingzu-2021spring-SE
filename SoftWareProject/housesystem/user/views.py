@@ -1065,7 +1065,7 @@ def admin_sidebar(request):
             for work in works:
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
-                orders = Order.objects.get(HouseID=house.HouseID)
+                orders = Order.objects.filter(HouseID=house.HouseID)
                 for o in orders:
                     order = o
                     break
