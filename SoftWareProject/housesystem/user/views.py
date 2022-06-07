@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import re
 from .models import *
 from index.models import *
-from .sendemail import sendcode
+from .sendemail import *
 
 @csrf_exempt
 def Register(request):
@@ -14,7 +14,7 @@ def Register(request):
         function_id = querylist.get('function_id')
         if function_id == '1':
             email = querylist.get('email')
-            code = sendcode(email)
+            code = sendcode(email)  # 成功发送返回字符串形式6为验证码 否则返回'X'
             if code == 'X':
                 return JsonResponse({'errornumber': 8, 'message': "发送邮件失败"})
             return JsonResponse({'errornumber': 0, 'code': code})
