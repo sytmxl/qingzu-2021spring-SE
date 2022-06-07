@@ -818,8 +818,8 @@ def information(request):
                 file = request.FILES.get('file')
                 suffix = '.' + file.name.split('.')[-1]
                 file.name = str(order_id) + '合同' + suffix
-                file_url = "http://127.0.0.1:8000/media/" + file.name
-                new_contract = Contract(OrderID=order_id,File = file,File_url = file_url)
+                filepath = "http://127.0.0.1:8000/media/" + file.name
+                new_contract = Contract(OrderID=order_id,File = file,FilePath= filepath)
                 new_contract.save()
                 return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
         elif function_id == '7': #自动生成合同

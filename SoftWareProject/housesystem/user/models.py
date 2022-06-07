@@ -11,7 +11,7 @@ class Contract(models.Model):
     ContractID = models.AutoField(primary_key=True,null=False)
     OrderID = models.IntegerField(null=False)
     File = models.FileField(upload_to='',null=True,default='') #合同图片
-    File_url = models.CharField(max_length=255,null=True,default='') #合同图片路由
+    FilePath = models.CharField(max_length=255,null=True,default='') #合同图片路由
     Passed = models.BooleanField(default=False) # 是否被管理员审核通过过
     Result = models.BooleanField(default=False)     # 管理员审核结果
 
