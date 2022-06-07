@@ -11,9 +11,9 @@ class Info(models.Model):
 
 class Picture(models.Model):
     PicID = models.AutoField(primary_key=True,null=False)
-    PicPath = models.CharField(max_length=255,null=True)
+    Pic = models.FileField(upload_to='',null=True,default='') #房源图片
+    PicPath = models.CharField(max_length=255,null=True,default='')#房源图片路由
     HouseID = models.IntegerField(null=True)  #没设置外键
-    WorkID = models.IntegerField(null=True)   #没设置外键
 
 class House(models.Model):
     HouseID = models.AutoField(primary_key=True,null=False)

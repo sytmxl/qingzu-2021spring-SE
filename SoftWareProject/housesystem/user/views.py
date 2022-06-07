@@ -115,7 +115,7 @@ def user(request):
 
             return JsonResponse()
         elif function_id == '5': #详细资料
-            return JsonResponse({'Username':user.Username,'Phone':user.Phone,'City':user.City,'Job':user.Job})
+            return JsonResponse({'avatar_url':user.avatar_url,'Username':user.Username,'Phone':user.Phone,'City':user.City,'Job':user.Job})
         elif function_id == '6': #修改个人资料
             user = User.objects.get(UserID=user_id)
             user.Introduction = querylist.get('introduction')
@@ -297,7 +297,7 @@ def worker_index(request):
     user_id = querylist.get('user_id')
     user = User.objects.get(UserID=user_id)
     if function_id == '1': #我的资料
-        return JsonResponse({'avatar_url':user.avatar_url,'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City,'Email':user.Email})
+        return JsonResponse({'Username':user.Username,'UserID':user.UserID,'Phone':user.Phone,'City':user.City,'Email':user.Email,'avatar_url':user.avatar_url})
     elif function_id == '2': #历史工单
         list = Work.objects.filter(WorkerID=user_id,Status = True)
         worklist = []
