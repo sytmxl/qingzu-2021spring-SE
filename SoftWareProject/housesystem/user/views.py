@@ -122,11 +122,13 @@ def user(request):
             user.save()
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '7': #修改个人资料
-            user = User.objects.get(UserID=user_id)
             user.Username = querylist.get('Username')
             user.Phone = querylist.get('Phone')
             user.City = querylist.get('City')
             user.Job = querylist.get('Job')
+            user.save()
+            return JsonResponse({'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job,'avatar':user.avatar.name})
+        elif function_id == '8': #修改头像
             avatar = request.FILES.get('avatar')
             suffix = '.' + avatar.name.split('.')[-1]
             avatar.name = str(user_id)+'头像'+suffix
@@ -134,7 +136,7 @@ def user(request):
             user.save()
             user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
             user.save()
-            return JsonResponse({'avatar_url':user.avatar_url,'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job,'avatar':user.avatar.name})
+            return JsonResponse({'avatar_url': user.avatar_url})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
