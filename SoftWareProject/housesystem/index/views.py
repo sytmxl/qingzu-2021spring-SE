@@ -77,7 +77,10 @@ def FirstPage(request): #主界面
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
             picturelist = []
-            for x in Picture.objects.fliter('')
+            for x in Picture.objects.fliter(''):
+                picturelist.append({
+                    x.PicPath
+                })
             return JsonResponse({'Mark':house.Mark,
                                  'HouseID':house.HouseID,
                                  'Housename':house.Housename,
