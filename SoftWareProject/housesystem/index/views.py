@@ -51,11 +51,18 @@ def FirstPage(request): #主界面
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '2':  # 我的收藏
             houselist = []
+            picturelist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                y=Picture.objects.filter(HouseID=x.HouseID)
+                for z in y:
+                    picturelist.append({
+                        z.PicPath
+                    })
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'picturelist':picturelist
                 })
-            print(houselist)
+                picturelist.clear()
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
@@ -69,6 +76,8 @@ def FirstPage(request): #主界面
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
+            picturelist = []
+            for x in Picture.objects.fliter('')
             return JsonResponse({'Mark':house.Mark,
                                  'HouseID':house.HouseID,
                                  'Housename':house.Housename,
@@ -78,7 +87,9 @@ def FirstPage(request): #主界面
                                  'Floor': house.Floor,
                                  'Type': house.Type,
                                  'LandlordPhone': house.LandlordPhone,
-                                 'Introduction': house.Introduction})
+                                 'Introduction': house.Introduction,
+                                 'Picturelist':picturelist
+                                 })
         elif function_id == '6': # 收藏
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)

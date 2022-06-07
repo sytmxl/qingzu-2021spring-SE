@@ -61,7 +61,7 @@ def Login(request):
             if(loginuser.Status=='Y'):
                 return JsonResponse({'errornumber': 0, 'message': "欢迎用户",'User_id':loginuser.UserID,'Username':loginuser.Username})
             elif(loginuser.Status=='G'):
-                return JsonResponse({'errornumber': 1, 'message': "欢迎管理员",'User_id':loginuser.UserID,'Username':loginuser.Username})
+                return JsonResponse({'errornumber': 1, 'message': "欢迎管理员",'User_id':loginuser.UserID,'Username':loginuser.Username,'avatar_url':loginuser.avatar_url})
             elif(loginuser.Status=='S'):
                 return JsonResponse({'errornumber': 2, 'message': "欢迎师傅",'User_id':loginuser.UserID,'Username':loginuser.Username})
     else:
