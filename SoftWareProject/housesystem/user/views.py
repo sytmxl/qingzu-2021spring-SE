@@ -130,10 +130,11 @@ def user(request):
             avatar = request.FILES.get('avatar')
             suffix = '.' + avatar.name.split('.')[-1]
             avatar.name = str(user_id)+'头像'+suffix
-            user.avatar_url = "http://127.0.0.1:8000/media/" + avatar
             user.avatar= avatar
             user.save()
-            return JsonResponse({'avatar_url':user.avatar_url,'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job,'avatar':avatar.name})
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
+            user.save()
+            return JsonResponse({'avatar_url':user.avatar_url,'Username': user.Username, 'Phone': user.Phone, 'City': user.City,'Job': user.Job,'avatar':user.avatar.name})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -144,10 +145,15 @@ def RepairMan_SelfInfo(request):
         function_id = querylist.get('function_id')
         user_id = querylist.get('user_id')
         user = User.objects.get(UserID=user_id)
-        if function_id == '4': #修改头像（这里可能要修改）
-            new_picture = Picture(PicPath = querylist.get('PicPath'))
-            new_picture.save()
-            return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
+        if function_id == '4': #修改头像
+            avatar = request.FILES.get('avatar')
+            suffix = '.' + avatar.name.split('.')[-1]
+            avatar.name = str(user_id)+'头像'+suffix
+            user.avatar= avatar
+            user.save()
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
+            user.save()
+            return JsonResponse({'errornumber': 0, 'message': "头像更改成功",'avatar_url':user.avatar_url})
         elif function_id == '5': #修改电话
             phone = querylist.get('phone')
             if (re.match("^\d{11}$", phone) == None):  # 任意长度的字符和数字组合

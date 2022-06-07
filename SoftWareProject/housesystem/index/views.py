@@ -531,12 +531,12 @@ def service(request):
             order = Order.objects.get(OrderID=order_id)
             house_id = order.HouseID
             description = querylist.get('description')
-            picpath = querylist.get('picpath')
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id)
+            picture = request.FILES.get('picture')
+            suffix = '.' + picture.name.split('.')[-1]
+            picture.name = str(order_id)+'报修投诉'+suffix
+            picture_url = "http://127.0.0.1:8000/media/" + picture.name
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture,Picture_url=picture_url)
             new_work.save()
-            work = Work.objects.get(Datetime=now, HouseID=house_id, Description=description, UserID=user_id)
-            new_picture = Picture(PicPath=picpath, HouseID=house_id, WorkID=work.WorkID)
-            new_picture.save()
             return JsonResponse({'errornumber': 1, 'message': "提交投诉/报修成功！"})
         elif function_id == '14': #提交留言
             work_id = querylist.get('work_id')
@@ -814,9 +814,12 @@ def information(request):
             elif flag == '2':
                 new_order = Order(OrderDate = start_day,DueDate = finish_day,Price=price,Pay=False,UserID=user_id,HouseID=house_id)
                 new_order.save()
-                filepath = querylist.get('filepath')
-                order_id = Order.objects.get(HouseID=house_id).OrderID
-                new_contract = Contract(OrderID=order_id,FilePath=filepath)
+                order_id = new_order.OrderID
+                file = request.FILES.get('file')
+                suffix = '.' + file.name.split('.')[-1]
+                file.name = str(order_id) + '合同' + suffix
+                file_url = "http://127.0.0.1:8000/media/" + file.name
+                new_contract = Contract(OrderID=order_id,File = file,File_url = file_url)
                 new_contract.save()
                 return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
         elif function_id == '7': #自动生成合同
