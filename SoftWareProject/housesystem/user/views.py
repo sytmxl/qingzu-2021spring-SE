@@ -578,6 +578,26 @@ def Manage_House(request):
                 return JsonResponse({'errornumber': 0, 'message': "添加成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "添加失败"})
+        elif function_id == '14':  # 新增房源图片
+            try:
+                id = querylist.get('house_id')
+                piclist = [request.FILES.get('pic1'), request.FILES.get('pic2'), request.FILES.get('pic3'),
+                           request.FILES.get('pic4'), request.FILES.get('pic5')]
+                i = 1
+                for pic in piclist:
+                    try:
+                        print(pic.name)
+                    except:
+                        continue
+                    # suffix = '.' + pic.name.split('.')[-1]
+                    pic.name = "房源" + str(id) + "图片" + str(i)
+                    url = "http://127.0.0.1:8000/media/" + pic.name
+                    pic = Picture(PicPath=url, HouseID=id, Pic=pic)
+                    pic.save()
+                    i += 1
+                return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "添加失败"})
         else:
             return admin_sidebar(request)
     else:
