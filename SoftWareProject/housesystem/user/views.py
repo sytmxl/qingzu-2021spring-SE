@@ -105,8 +105,10 @@ def user(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料

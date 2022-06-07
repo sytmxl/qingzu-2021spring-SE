@@ -151,8 +151,10 @@ def search(request): #我要租房
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -274,8 +276,10 @@ def order(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -369,8 +373,10 @@ def info_order(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -419,8 +425,10 @@ def service(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -613,8 +621,10 @@ def info_complain(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -663,8 +673,10 @@ def connect(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -713,8 +725,10 @@ def collection(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -799,8 +813,10 @@ def information(request):
         elif function_id == '2':  # 我的收藏
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
