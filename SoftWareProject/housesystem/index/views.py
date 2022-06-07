@@ -68,7 +68,18 @@ def FirstPage(request): #主界面
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '4': # 主页
             houselist = []
+            single_houselist = []
             picturelist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                for y in Picture.objects.filter():
+                    picturelist.append({
+
+                    })
+                single_houselist.append({
+                    'HouseID':x.HouseID,
+                    'Picturelist':picturelist
+                })
             return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
