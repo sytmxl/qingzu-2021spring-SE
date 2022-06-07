@@ -346,19 +346,14 @@ def Commander_FirstPage(request):
         if function_id == '9':  # 修改头像
             user_id = querylist.get('user_id')
             user = User.objects.get(UserID=user_id)
-            pic_path = querylist.get('pic_path')
-
-            if user.PicID != '':
-                pic = Picture.objects.get(PicID= user.PicID)
-                pic.PicPath = pic_path
-                pic.save()
-            else:
-                pic = Picture(PicPath=pic_path)
-                pic.save()
-                user.PicID = pic.PicID
-                user.save()
-
-            return JsonResponse({'errornumber': 0, 'message': "头像更改成功"})
+            avatar = request.FILES.get('avatar')
+            suffix = '.' + avatar.name.split('.')[-1]
+            avatar.name = str(user_id) + '头像' + suffix
+            user.avatar = avatar
+            user.save()
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
+            user.save()
+            return JsonResponse({'errornumber': 0, 'message': "头像更改成功", 'avatar_url': user.avatar_url})
         elif function_id == '10': # 修改电话
             user_id = querylist.get('user_id')
             user = User.objects.get(UserID=user_id)
@@ -541,6 +536,10 @@ def Manage_House(request):
         elif function_id == '11':  # 下架房源(删除）
             try:
                 house_id = querylist.get('house_id')
+                pics = Picture.objects.filter(HouseID=house_id)
+                for pic in pics:
+                    pic.Pic.delete()
+                    pic.delete()
                 House.objects.get(HouseID=house_id).delete()
                 return JsonResponse({'errornumber': 0, 'message': "下架成功"})
             except:
@@ -562,12 +561,40 @@ def Manage_House(request):
                     Floor=querylist.get('floor'),
                 )
                 house.save()
-                piclist = querylist.get('pic_path_list')
-                for path in piclist:
-                    pic = Picture(PicPath=path, HouseID=id)
+                piclist = [request.FILES.get('pic1'), request.FILES.get('pic2'), request.FILES.get('pic3'),
+                           request.FILES.get('pic4'), request.FILES.get('pic5')]
+                i = 1
+                for pic in piclist:
+                    try:
+                        print(pic.name)
+                    except:
+                        continue
+                    # suffix = '.' + pic.name.split('.')[-1]
+                    pic.name = "房源" + str(id) + "图片" + str(i)
+                    url = "http://127.0.0.1:8000/media/" + pic.name
+                    pic = Picture(PicPath=url, HouseID=id, Pic=pic)
                     pic.save()
-                    newpic = Picture(HouseID=id, PicID=pic.PicID, PicPath=pic.PicPath)
-                    newpic.save()
+                    i += 1
+                return JsonResponse({'errornumber': 0, 'message': "添加成功"})
+            except:
+                return JsonResponse({'errornumber': 1, 'message': "添加失败"})
+        elif function_id == '14':  # 新增房源图片
+            try:
+                id = querylist.get('house_id')
+                piclist = [request.FILES.get('pic1'), request.FILES.get('pic2'), request.FILES.get('pic3'),
+                           request.FILES.get('pic4'), request.FILES.get('pic5')]
+                i = 1
+                for pic in piclist:
+                    try:
+                        print(pic.name)
+                    except:
+                        continue
+                    # suffix = '.' + pic.name.split('.')[-1]
+                    pic.name = "房源" + str(id) + "图片" + str(i)
+                    url = "http://127.0.0.1:8000/media/" + pic.name
+                    pic = Picture(PicPath=url, HouseID=id, Pic=pic)
+                    pic.save()
+                    i += 1
                 return JsonResponse({'errornumber': 0, 'message': "添加成功"})
             except:
                 return JsonResponse({'errornumber': 1, 'message': "添加失败"})
