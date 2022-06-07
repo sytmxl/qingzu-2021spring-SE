@@ -439,7 +439,8 @@ def service(request):
                 worklist.append({
                     'Datetime':x.Datetime,
                     'OrderID':x.OrderID,
-                    'Address':y.Address
+                    'Address':y.Address,
+                    'WorkID':x.WorkID
                 })
             return JsonResponse({'worklist': worklist})
         elif function_id == '7': #历史完成报修
@@ -450,7 +451,8 @@ def service(request):
                 worklist.append({
                     'Datetime':x.Datetime,
                     'OrderID':x.OrderID,
-                    'Address':y.Address
+                    'Address':y.Address,
+                    'WorkID': x.WorkID
                 })
             return JsonResponse({'worklist': worklist})
         elif function_id == '8': # 查看历史订单详情
