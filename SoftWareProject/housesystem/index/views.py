@@ -534,10 +534,11 @@ def service(request):
             picture = request.FILES.get('picture')
             suffix = '.' + picture.name.split('.')[-1]
             picture.name = str(order_id)+'报修投诉'+suffix
-            picture_url = "http://127.0.0.1:8000/media/" + picture.name
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture,Picture_url=picture_url)
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture)
             new_work.save()
-            return JsonResponse({'errornumber': 1, 'message': "提交投诉/报修成功！"})
+            new_work.picture_url = "http://127.0.0.1:8000/media/" + new_work.Picture.name
+            new_work.save()
+            return JsonResponse({'errornumber': 1, 'message': "提交投诉/报修成功！",'picture_url':new_work.picture_url})
         elif function_id == '14': #提交留言
             work_id = querylist.get('work_id')
             Errornumber = querylist.get('errornumber')
