@@ -51,43 +51,32 @@ def FirstPage(request): #主界面
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '2':  # 我的收藏
             houselist = []
-            picturelist = []
             for x in UserHouse.objects.filter(UserID=user_id):
-                y=Picture.objects.filter(HouseID=x.HouseID)
-                for z in y:
-                    picturelist.append({
-                        z.PicPath
-                    })
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'picturelist':picturelist
+                    'PicPathList': list(pics)
                 })
-                picturelist.clear()
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '4': # 主页
             houselist = []
-            single_houselist = []
-            picturelist = []
             allhouse = House.objects.filter()
             for x in allhouse:
-                for y in Picture.objects.filter():
-                    picturelist.append({
-
-                    })
-                single_houselist.append({
-                    'HouseID':x.HouseID,
-                    'Picturelist':picturelist
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
             picturelist = []
-            for x in Picture.objects.fliter(''):
+            for x in Picture.objects.filter(HouseID=house_id):
                 picturelist.append({
-                    x.PicPath
+                    'PicPathList': x.PicPath
                 })
             return JsonResponse({'Mark':house.Mark,
                                  'HouseID':house.HouseID,
@@ -99,7 +88,7 @@ def FirstPage(request): #主界面
                                  'Type': house.Type,
                                  'LandlordPhone': house.LandlordPhone,
                                  'Introduction': house.Introduction,
-                                 'Picturelist':picturelist
+                                 'Picturelist': picturelist
                                  })
         elif function_id == '6': # 收藏
             house_id = querylist.get('house_id')
@@ -518,7 +507,11 @@ def service(request):
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
             order = Order.objects.get(OrderID=work.OrderID)
-            picture = Picture.objects.get(WorkID=work_id)
+            picturelist = []
+            for x in Picture.objects.filter(HouseID=house_id):
+                picturelist.append({
+                    'PicPathList': x.PicPath
+                })
             return JsonResponse({'HouseID':house.HouseID,
                                  'Housename':house.Housename,
                                  'Rent':house.Rent,
@@ -530,7 +523,7 @@ def service(request):
                                  'OrderDate': order.OrderDate.date(),
                                  'DueDate': order.DueDate.date(),
                                  'Introduction': house.Introduction,
-                                 'ComplainPic':picture.PicPath,
+                                 'ComplainPic':picturelist,
                                  'ComplainText':work.Description})
         elif function_id == '11':#联系师傅/客服
             work_id = querylist.get('work_id')
