@@ -67,12 +67,9 @@ def FirstPage(request): #主界面
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '4': # 主页
-            '''
-            user_id是前端传来的用户id，根据这个id在数据库中获取用户可能喜欢的房源，返回值是房源ID+房源图片ID+房源图片路径（对应数据库中的HouseID，PicID和PicPath）列表的json格式。
-            用户收藏的房源存储在user下的UserHouse类中。如有必要的话可以添加一个新的类，里面存储用户浏览的房源，根据此来做推荐算法。
-            '''
-
-            return JsonResponse()
+            houselist = []
+            picturelist = []
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
