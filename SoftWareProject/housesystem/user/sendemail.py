@@ -1,13 +1,21 @@
+import os
+import sys
+import django
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(BASE_DIR)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'housesystem.settings')
+django.setup()
 import random
 from time import sleep
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
-#from .models import *
+from user.models import Order, User
+# from .models import *
 import datetime
 
 
-def send(to):
+def send(to, text):
     # 第三方 SMTP 服务
     mail_host = "smtp.qq.com"  # 设置服务器
     mail_user = '1728999839@qq.com'  # 用户名
@@ -16,7 +24,7 @@ def send(to):
     sender = '1728999839@qq.com'  # 发送邮箱
     receivers = [to]  # 接收邮件
 
-    message = MIMEText('请及时支付租金', 'plain', 'utf-8')
+    message = MIMEText(text, 'plain', 'utf-8')
     message['From'] = Header("青年租房网", 'utf-8')
     message['To'] = Header("亲爱的租客", 'utf-8')
 
@@ -68,37 +76,48 @@ def sendcode(to):
 
 
 def check(begin, end):
+
+    begin = begin.date()
+    end = end.date()
+
     today = datetime.date.today()
     month = datetime.timedelta(days=30)
     week = datetime.timedelta(weeks=1)
     zero = datetime.timedelta(days=0)
+    print("begin: ", end="")
+    print(begin)
+    print("end: ", end="")
+    print(end)
     if end-begin >= month:
         temp = begin
         while temp <= end:
             if zero < temp-today <= week:
-                ture = True
-                return ture
+                return True, temp
             temp += month
-    false = False
-    return false
+    return False, today
 
 
-def everyday():
+def everyday(time):
     while True:
         orders = Order.objects.all()
+        print('##########')
+        print('start:')
+        print('##########')
         for order in orders:
             if order.Pay == 0:
-                if check(order.OrderDate, order.DueDate):
+                flag, ddl = check(order.OrderDate, order.DueDate)
+                if flag:
                     user = User.objects.get(UserID=order.UserID)
-                    # send(user.Email)
-                    print(user.Email)
+                    text = "亲爱的用户，你有一单长租的月租尚未支付，请在" + str(ddl) + "之前提交，谢谢。"
+                    send(user.Email, text)
+                else:
+                    print('skip')
         # send('1728999839@qq.com')
-        sleep(60*60*24)  # seconds
+        # sleep(60*60*24)  # seconds
+        sleep(time)
 
 
-if __name__ == '__main__':
-    # Thread(target=send).start()
-    # everyday()
+def main():
     time = datetime.date.today()
     month = datetime.timedelta(days=30)
     week = datetime.timedelta(weeks=1)
@@ -108,7 +127,7 @@ if __name__ == '__main__':
     print(time + month - week)
     print(time2 - time)
     gap = time2 - time
-    print(gap.days>16)
+    print(gap.days > 16)
     strcode = ''
     for i in range(6):
         strcode += str(int(random.Random().random() * 10))
@@ -116,4 +135,13 @@ if __name__ == '__main__':
     code = int(code)
     print(code)
     print(strcode)
-    sendcode('1728999839@qq.com')
+    # sendcode('1728999839@qq.com')
+
+
+if __name__ == '__main__':
+    # Thread(target=).start()
+    day = 60*60*24  # 一天一次
+    everyday(time=day)
+    # main()
+
+
