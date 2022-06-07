@@ -190,8 +190,10 @@ def search(request): #我要租房
             # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
             houselist = []
             for house in houses:
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
-                    'id': house.HouseID
+                    'HouseID': house.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '8': #房源筛选
@@ -219,8 +221,10 @@ def search(request): #我要租房
 
             houselist = []
             for house in houses:
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
-                    'id': house.HouseID
+                    'HouseID': house.HouseID,
+                    'PicPathList': list(pics)
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '9': #提交申请
