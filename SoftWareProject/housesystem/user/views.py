@@ -1063,17 +1063,12 @@ def admin_sidebar(request):
                 user = User.objects.get(UserID=id)
             except:
                 return JsonResponse({'errornumber': 1, 'message': "用户不存在"})
-            try:
-                pic = Picture.objects.get(PicID=user.PicID)
-                path = pic.PicPath
-            except:
-                path = ''
             return JsonResponse({
                 'name':user.Username, # 管理员名字
                 'id': user.UserID, # 管理员ID
                 'phone': user.Phone,
                 'email': user.Email,
-                'path': path #头像图片路径
+                'path': user.avatar_url #头像图片路径
             })
         elif function_id == '2':    # 管理租客
             users = User.objects.filter(Status='Y')
