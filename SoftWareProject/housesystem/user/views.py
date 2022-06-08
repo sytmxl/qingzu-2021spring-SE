@@ -106,9 +106,16 @@ def user(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
-                    'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'HouseID': house.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                    'Floor': house.Floor,
+                    'Housename': house.Housename
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
