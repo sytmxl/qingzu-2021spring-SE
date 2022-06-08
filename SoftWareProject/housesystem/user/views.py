@@ -229,7 +229,8 @@ def History_Work(request):
                 'Phone':renter.Phone,
                 'Address':house.Address,
                 'Description':work.Description,
-                'Comment':work.Comment
+                'Comment':work.Comment,
+                'Mark':work.Mark
             })
             picture = work.Picture_url
             return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picture':picture})

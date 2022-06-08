@@ -54,9 +54,14 @@ def FirstPage(request): #主界面
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -66,9 +71,14 @@ def FirstPage(request): #主界面
             allhouse = House.objects.filter()
             for x in allhouse:
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
                 })
             return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
@@ -113,10 +123,11 @@ def search(request): #我要租房
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -129,6 +140,7 @@ def search(request): #我要租房
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -142,16 +154,33 @@ def search(request): #我要租房
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '4': # 主页
-
-            return JsonResponse()
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
@@ -242,10 +271,11 @@ def order(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -258,6 +288,7 @@ def order(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -271,16 +302,33 @@ def order(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
         elif function_id == '4': # 主页
-
-            return JsonResponse()
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': #正在处理
             order = Order.objects.filter(UserID=user_id,Pay=False)
             orderlist = []
@@ -339,10 +387,11 @@ def info_order(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -355,6 +404,7 @@ def info_order(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -368,16 +418,33 @@ def info_order(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
     else:
         return  JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -391,10 +458,11 @@ def service(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -407,6 +475,7 @@ def service(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -420,16 +489,33 @@ def service(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': # 历史订单
             order = Order.objects.filter(UserID=user_id, Pay=True)
             orderlist = []
@@ -596,10 +682,11 @@ def info_complain(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -612,6 +699,7 @@ def info_complain(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -625,16 +713,33 @@ def info_complain(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -648,10 +753,11 @@ def connect(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -664,6 +770,7 @@ def connect(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -677,16 +784,33 @@ def connect(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
@@ -700,10 +824,11 @@ def collection(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -716,6 +841,7 @@ def collection(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -729,16 +855,33 @@ def collection(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': #查看
             house_id = querylist.get('house_id')
             house = House.objects.get(HouseID=house_id)
@@ -788,10 +931,11 @@ def information(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
+            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
+                    'OrderDate':x.OrderDate.date(),
                     'OrderID': x.OrderID,
                     'HouseID': x.HouseID,
                     'LandlordName': y.LandlordName,
@@ -804,6 +948,7 @@ def information(request):
             order = Order.objects.filter(UserID=user_id)
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
+                print(x.DueDate)
                 orderlist.append({
                     'OrderDate': x.OrderDate.date(),
                     'OrderID': x.OrderID,
@@ -817,16 +962,33 @@ def information(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
                     'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address':house.Address,
+                    'Area':house.Area,
+                    'Housetype':house.Housetype,
+                    'Rent':house.Rent,
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
             return JsonResponse({'introduction': user.Introduction})
-        elif function_id == '4':  # 主页
-
-            return JsonResponse()
+        elif function_id == '4': # 主页
+            houselist = []
+            allhouse = House.objects.filter()
+            for x in allhouse:
+                pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
+                houselist.append({
+                    'HouseID': x.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                })
+            return JsonResponse({'houselist':houselist})
         elif function_id == '5': #短租
             house_id = querylist.get('house_id')
             flag = querylist.get('flag')
