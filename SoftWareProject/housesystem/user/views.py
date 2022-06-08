@@ -231,11 +231,8 @@ def History_Work(request):
                 'Description':work.Description,
                 'Comment':work.Comment
             })
-            piclist = Picture.objects.filter(WorkID=work_id)
-            picturelist = []
-            for x in piclist:
-                picturelist.append(x.PicPath)
-            return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picturelist':picturelist})
+            picture = work.Picture_url
+            return JsonResponse({'detailwork':detailwork,'worklist':worklist,'picture':picture})
         else:
             return worker_index(request)
     else:
@@ -275,7 +272,7 @@ def Todo_Work(request):
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
             order = Order.objects.get(HouseID=house_id)
-            picture = Picture.objects.get(WorkID=work_id)
+            picture = work.Picture_url
             return JsonResponse({'HouseID': house.HouseID,
                                  'Housename': house.Housename,
                                  'Rent': house.Rent,
@@ -287,7 +284,7 @@ def Todo_Work(request):
                                  'OrderDate': order.OrderDate.date(),
                                  'DueDate': order.DueDate.date(),
                                  'Introduction': house.Introduction,
-                                 'ComplainPic': picture.PicPath,
+                                 'ComplainPic': picture,
                                  'ComplainText': work.Description})
         else:
             return worker_index(request)
