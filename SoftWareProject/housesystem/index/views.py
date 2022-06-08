@@ -11,6 +11,7 @@ from user.models import *
 import datetime
 from reportlab.pdfgen import canvas
 from django.core import serializers
+import shutil
 
 @csrf_exempt
 def FirstPage(request): #主界面
@@ -864,7 +865,8 @@ def information(request):
             starttime = querylist.get('starttime')
             endtime = querylist.get('endtime')
             house_id = querylist.get('house_id')
-            pdf = canvas.Canvas("租客"+user_id+"房屋"+house_id+"房屋租赁合同.pdf")
+            name = "租客"+user_id+"房屋"+house_id+"房屋租赁合同.pdf"
+            pdf = canvas.Canvas(name)
             pdfmetrics.registerFont(TTFont('song','C:/Windows/Fonts/simfang.ttf'))
             pdf.setFont('song', 10)
             pdf.drawString(300, 700, "房屋租赁合同")
@@ -877,7 +879,9 @@ def information(request):
             pdf.drawString(300, 530, "乙方签字：")
             pdf.showPage()
             pdf.save()
-            return JsonResponse({'errornumber': 2, 'message': "成功！"})
+            shutil.copy(name, './media/')
+            pdf_url = "http://127.0.0.1:8000/media/"+name
+            return JsonResponse({'errornumber': 1, 'message': "成功！",'pdf_url':pdf_url})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
