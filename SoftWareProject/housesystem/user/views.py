@@ -272,7 +272,10 @@ def Todo_Work(request):
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
             order = Order.objects.get(HouseID=house_id)
+<<<<<<< HEAD
             picture = work.Picture_url
+=======
+>>>>>>> 701be3d8303f013dbd9e4feef826ff49549aaf9d
             return JsonResponse({'HouseID': house.HouseID,
                                  'Housename': house.Housename,
                                  'Rent': house.Rent,
@@ -284,7 +287,11 @@ def Todo_Work(request):
                                  'OrderDate': order.OrderDate.date(),
                                  'DueDate': order.DueDate.date(),
                                  'Introduction': house.Introduction,
+<<<<<<< HEAD
                                  'ComplainPic': picture,
+=======
+                                 'ComplainPic': work.Picture_url,
+>>>>>>> 701be3d8303f013dbd9e4feef826ff49549aaf9d
                                  'ComplainText': work.Description})
         else:
             return worker_index(request)
@@ -852,7 +859,6 @@ def Manage_Complain(request):
                 for o in orders:
                     order = o
                     break
-                picture = Picture.objects.get(WorkID=work.WorkID)
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -872,7 +878,7 @@ def Manage_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
@@ -883,11 +889,6 @@ def Manage_Complain(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                try:
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    path = picture.PicPath
-                except:
-                    path = ''
                 return JsonResponse({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -907,7 +908,7 @@ def Manage_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': path,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             except:
@@ -982,7 +983,6 @@ def Managed_Complain(request):
                 for o in orders:
                     order = o
                     break
-                picture = Picture.objects.get(WorkID=work.WorkID)
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -1002,7 +1002,7 @@ def Managed_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': picture.PicPath,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
@@ -1013,11 +1013,6 @@ def Managed_Complain(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                try:
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    path = picture.PicPath
-                except:
-                    path = ''
                 return JsonResponse({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -1037,7 +1032,7 @@ def Managed_Complain(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': path,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             except:
@@ -1118,11 +1113,6 @@ def admin_sidebar(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                try:
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    path = picture.PicPath
-                except:
-                    path = ''
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -1142,7 +1132,7 @@ def admin_sidebar(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': path,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
@@ -1153,11 +1143,6 @@ def admin_sidebar(request):
                 user = User.objects.get(UserID=work.UserID)
                 house = House.objects.get(HouseID=work.HouseID)
                 order = Order.objects.get(OrderID=work.OrderID)
-                try:
-                    picture = Picture.objects.get(WorkID=work.WorkID)
-                    path = picture.PicPath
-                except:
-                    path = ''
                 worklist.append({
                     'Datetime': work.Datetime,
                     'WorkID': work.WorkID,
@@ -1177,7 +1162,7 @@ def admin_sidebar(request):
                     'OrderDate': order.OrderDate.date(),
                     'DueDate': order.DueDate.date(),
                     'Introduction': house.Introduction,
-                    'ComplainPic': path,
+                    'ComplainPic': work.Picture_url,
                     'ComplainText': work.Description
                 })
             return JsonResponse({'worklist': worklist})
