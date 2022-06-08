@@ -234,6 +234,12 @@ def search(request): #我要租房
             type = querylist.get('type')
             rent = querylist.get('rent')
 
+            lay = city.split('/')
+            if lay[1] == '市辖区':
+                city = lay[0][:-1] + lay[2][:-1]
+            else:
+                city = lay[1][:-1] + lay[2][:-1]
+
             houses = House.objects.filter(Status=False)
 
             if city != '':

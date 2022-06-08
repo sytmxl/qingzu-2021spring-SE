@@ -144,12 +144,22 @@ def main():
         pic.PicPath = pic.PicPath + '.png'
         pic.save()'''
 
+def switch(city):
+    lay = city.split('/')
+    if lay[1] == '直辖市':
+        city = lay[0][:-1] + lay[2][:-1]
+    else:
+        city = lay[1][:-1] + lay[2][:-1]
+    print(city)
+
 
 if __name__ == '__main__':
     # Thread(target=).start()
 
     day = 60*60*24  # 一天一次
-    everyday(time=day)
+    # everyday(time=day)
+
+
 
 
 
