@@ -574,6 +574,15 @@ def service(request):
             new_message = Message(Errornumber=Errornumber,UserID = UserID,Text = Text,Username = Username,WorkID=work_id)
             new_message.save()
             return JsonResponse({'errornumber': 1, 'message': "留言成功！"})
+        elif function_id == '15': #评分
+            work_id = querylist.get('work_id')
+            mark = querylist.get('mark')
+            work = Work.objects.get(WorkID=work_id)
+            work.Mark = mark
+            work.Status = True
+            work.save()
+            return JsonResponse({'errornumber': 1, 'message': "评分成功！"})
+
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
 
