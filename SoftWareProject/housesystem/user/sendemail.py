@@ -11,6 +11,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 from user.models import Order, User
+from index.models import *
 # from .models import *
 import datetime
 
@@ -138,10 +139,17 @@ def main():
     # sendcode('1728999839@qq.com')
 
 
+    '''pics = Picture.objects.all()
+    for pic in pics:
+        pic.PicPath = pic.PicPath + '.png'
+        pic.save()'''
+
+
 if __name__ == '__main__':
     # Thread(target=).start()
+
     day = 60*60*24  # 一天一次
     everyday(time=day)
-    # main()
+
 
 
