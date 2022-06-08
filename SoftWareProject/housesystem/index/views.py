@@ -243,7 +243,7 @@ def search(request): #我要租房
             houses = House.objects.filter(Status=False)
 
             if city != '':
-                houses = houses.filter(City=city)
+                houses = houses.filter(Address=city)
             if type != '':
                 houses = houses.filter(Housetype=type)
 
