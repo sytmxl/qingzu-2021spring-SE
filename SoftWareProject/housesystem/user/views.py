@@ -569,8 +569,8 @@ def Manage_House(request):
                         print(pic.name)
                     except:
                         continue
-                    # suffix = '.' + pic.name.split('.')[-1]
-                    pic.name = "房源" + str(id) + "图片" + str(i)
+                    suffix = '.' + pic.name.split('.')[-1]
+                    pic.name = "房源" + str(id) + "图片" + str(i) + suffix
                     url = "http://127.0.0.1:8000/media/" + pic.name
                     pic = Picture(PicPath=url, HouseID=id, Pic=pic)
                     pic.save()
@@ -589,8 +589,8 @@ def Manage_House(request):
                         print(pic.name)
                     except:
                         continue
-                    # suffix = '.' + pic.name.split('.')[-1]
-                    pic.name = "房源" + str(id) + "图片" + str(i)
+                    suffix = '.' + pic.name.split('.')[-1]
+                    pic.name = "房源" + str(id) + "图片" + str(i) + suffix
                     url = "http://127.0.0.1:8000/media/" + pic.name
                     pic = Picture(PicPath=url, HouseID=id, Pic=pic)
                     pic.save()
