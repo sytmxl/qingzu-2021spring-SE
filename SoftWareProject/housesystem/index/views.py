@@ -507,11 +507,6 @@ def service(request):
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
             order = Order.objects.get(OrderID=work.OrderID)
-            picturelist = []
-            for x in Picture.objects.filter(HouseID=house_id):
-                picturelist.append({
-                    'PicPathList': x.PicPath
-                })
             return JsonResponse({'HouseID':house.HouseID,
                                  'Housename':house.Housename,
                                  'Rent':house.Rent,
@@ -523,7 +518,7 @@ def service(request):
                                  'OrderDate': order.OrderDate.date(),
                                  'DueDate': order.DueDate.date(),
                                  'Introduction': house.Introduction,
-                                 'ComplainPic':picturelist,
+                                 'ComplainPic':work.Picture_url,
                                  'ComplainText':work.Description})
         elif function_id == '11':#联系师傅/客服
             work_id = querylist.get('work_id')
