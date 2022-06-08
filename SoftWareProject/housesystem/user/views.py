@@ -272,10 +272,7 @@ def Todo_Work(request):
             house_id = work.HouseID
             house = House.objects.get(HouseID=house_id)
             order = Order.objects.get(HouseID=house_id)
-<<<<<<< HEAD
             picture = work.Picture_url
-=======
->>>>>>> 701be3d8303f013dbd9e4feef826ff49549aaf9d
             return JsonResponse({'HouseID': house.HouseID,
                                  'Housename': house.Housename,
                                  'Rent': house.Rent,
@@ -287,11 +284,7 @@ def Todo_Work(request):
                                  'OrderDate': order.OrderDate.date(),
                                  'DueDate': order.DueDate.date(),
                                  'Introduction': house.Introduction,
-<<<<<<< HEAD
                                  'ComplainPic': picture,
-=======
-                                 'ComplainPic': work.Picture_url,
->>>>>>> 701be3d8303f013dbd9e4feef826ff49549aaf9d
                                  'ComplainText': work.Description})
         else:
             return worker_index(request)
