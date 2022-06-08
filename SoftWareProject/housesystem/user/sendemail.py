@@ -1,3 +1,4 @@
+#-- coding:UTF-8 --
 import os
 import sys
 import django
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     # Thread(target=).start()
 
     day = 60*60*24  # 一天一次
-    # everyday(time=day)
+    everyday(time=day)
 
 
 
