@@ -362,7 +362,8 @@ def order(request):
             order = Order.objects.filter(UserID=user_id)
             orderlist = []
             for x in order:
-                if Contract.objects.filter(OrderID=x.OrderID).exists()==False :
+                contract = Contract.objects.get(OrderID=x.OrderID)
+                if contract.Passed == False:
                     y = House.objects.get(HouseID=x.HouseID)
                     orderlist.append({
                         'OrderDate': x.OrderDate.date(),
@@ -371,19 +372,7 @@ def order(request):
                         'LandlordName': y.LandlordName,
                         'LandlordPhone': y.LandlordPhone,
                         'Address': y.Address
-                })
-                else:
-                    contract = Contract.objects.get(OrderID=x.OrderID)
-                    if contract.Passed == False:
-                        y = House.objects.get(HouseID=x.HouseID)
-                        orderlist.append({
-                            'OrderDate': x.OrderDate.date(),
-                            'OrderID': x.OrderID,
-                            'HouseID': x.HouseID,
-                            'LandlordName': y.LandlordName,
-                            'LandlordPhone': y.LandlordPhone,
-                            'Address': y.Address
-                        })
+                    })
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '6': #历史记录
             order = Order.objects.filter(UserID=user_id)
