@@ -106,9 +106,16 @@ def user(request):
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
                 pics = Picture.objects.filter(HouseID=x.HouseID).values('PicPath')
+                house = House.objects.get(HouseID=x.HouseID)
                 houselist.append({
-                    'HouseID': x.HouseID,
-                    'PicPathList': list(pics)
+                    'HouseID': house.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                    'Floor': house.Floor,
+                    'Housename': house.Housename
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '3':  # 个人资料
@@ -932,6 +939,9 @@ def Manage_Complain(request):
             try:
                 print('多个数据')
                 for worker_id in worker_id_list:
+                    work = Work.objects.get(WorkID=work_id)
+                    work.WorkerID = worker_id
+                    work.save()
                     worker = User.objects.get(UserID=int(worker_id))
                     worker.WorkID = work_id
                     worker.save()
@@ -940,6 +950,9 @@ def Manage_Complain(request):
                 worker = User.objects.get(UserID=int(worker_id_list))
                 worker.WorkID = work_id
                 worker.save()
+                work = Work.objects.get(WorkID=work_id)
+                work.WorkerID = worker.UserID
+                work.save()
             return JsonResponse({'errornumber': 0, 'message': "分配师傅成功"})
         elif function_id == '12':  # 提交留言
             work_id = querylist.get('work_id')

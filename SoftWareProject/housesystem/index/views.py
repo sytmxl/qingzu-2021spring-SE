@@ -220,7 +220,13 @@ def search(request): #我要租房
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
                     'HouseID': house.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                    'Floor': house.Floor,
+                    'Housename': house.Housename
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '8': #房源筛选
@@ -230,8 +236,14 @@ def search(request): #我要租房
 
             houses = House.objects.filter(Status=False)
 
-            if city != '':
-                houses = houses.filter(City=city)
+            print(city)
+            if city != 'undefined/undefined/undefined':
+                lay = city.split('/')
+                if lay[1] == '市辖区':
+                    city = lay[0][:-1] + lay[2][:-1]
+                else:
+                    city = lay[1][:-1] + lay[2][:-1]
+                houses = houses.filter(Address=city)
             if type != '':
                 houses = houses.filter(Housetype=type)
 
@@ -251,7 +263,13 @@ def search(request): #我要租房
                 pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
                     'HouseID': house.HouseID,
-                    'PicPathList': list(pics)
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                    'Floor': house.Floor,
+                    'Housename': house.Housename
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '9': #提交申请
@@ -935,8 +953,17 @@ def collection(request):
             userhouse.delete()
             houselist = []
             for x in UserHouse.objects.filter(UserID=user_id):
+                house = House.objects.get(HouseID=x.HouseID)
+                pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                 houselist.append({
-                    'HouseID': x.HouseID
+                    'HouseID': house.HouseID,
+                    'PicPathList': list(pics),
+                    'Address': house.Address,
+                    'Area': house.Area,
+                    'Housetype': house.Housetype,
+                    'Rent': house.Rent,
+                    'Floor': house.Floor,
+                    'Housename': house.Housename
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '7': # 搜索
@@ -945,9 +972,17 @@ def collection(request):
             houselist = []
             for house in houses:
                 try:
-                    x = UserHouse.objects.get(HouseID=house.HouseID, UserID=user_id)
+                    UserHouse.objects.get(HouseID=house.HouseID, UserID=user_id)
+                    pics = Picture.objects.filter(HouseID=house.HouseID).values('PicPath')
                     houselist.append({
-                        'HouseID': x.HouseID
+                        'HouseID': house.HouseID,
+                        'PicPathList': list(pics),
+                        'Address': house.Address,
+                        'Area': house.Area,
+                        'Housetype': house.Housetype,
+                        'Rent': house.Rent,
+                        'Floor': house.Floor,
+                        'Housename': house.Housename
                     })
                 except:
                     continue
