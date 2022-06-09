@@ -558,15 +558,17 @@ def service(request):
             order = Order.objects.filter(UserID=user_id, Pay=True)
             orderlist = []
             for x in order:
-                y = House.objects.get(HouseID=x.HouseID)
-                orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
-                    'OrderID': x.OrderID,
-                    'HouseID': x.HouseID,
-                    'LandlordName': y.LandlordName,
-                    'LandlordPhone': y.LandlordPhone,
-                    'Address': y.Address
-                })
+                contract = Contract.objects.get(OrderID=order.OrderID)
+                if contract.Passed == True:
+                    y = House.objects.get(HouseID=x.HouseID)
+                    orderlist.append({
+                        'OrderDate': x.OrderDate.date(),
+                        'OrderID': x.OrderID,
+                        'HouseID': x.HouseID,
+                        'LandlordName': y.LandlordName,
+                        'LandlordPhone': y.LandlordPhone,
+                        'Address': y.Address
+                    })
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '6': #正在处理保修
             work = Work.objects.filter(UserID=user_id,Status=False)
