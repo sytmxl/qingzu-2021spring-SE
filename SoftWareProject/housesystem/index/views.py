@@ -700,7 +700,7 @@ def service(request):
             picture.name = str(order_id)+'报修投诉'+suffix
             new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture,Status = False)
             new_work.save()
-            new_work.Picture_url = "http://127.0.0.1:8000/media/" + new_work.Picture.name
+            new_work.Picture_url = "http://43.138.67.29:8090/media/" + new_work.Picture.name
             print(new_work.Picture.name)
             new_work.save()
             return JsonResponse({'errornumber': 1, 'message': "提交投诉/报修成功！",'picture_url':new_work.Picture_url})
@@ -1110,7 +1110,7 @@ def information(request):
                 file = request.FILES.get('file')
                 suffix = '.' + file.name.split('.')[-1]
                 file.name = str(order_id) + '合同' + suffix
-                filepath = "http://127.0.0.1:8000/media/" + file.name
+                filepath = "http://43.138.67.29:8090/media/" + file.name
                 new_contract = Contract(OrderID=order_id,File = file,FilePath= filepath)
                 new_contract.save()
                 return JsonResponse({'errornumber': 1, 'message': "长租成功！"})
@@ -1137,7 +1137,7 @@ def information(request):
             pdf.showPage()
             pdf.save()
             shutil.copy(name, './media/')
-            pdf_url = "http://127.0.0.1:8000/media/"+name
+            pdf_url = "http://43.138.67.29:8090/media/"+name
             return JsonResponse({'errornumber': 1, 'message': "成功！",'pdf_url':pdf_url})
     else:
         return JsonResponse({'errornumber': 2, 'message': "请求方式错误"})
