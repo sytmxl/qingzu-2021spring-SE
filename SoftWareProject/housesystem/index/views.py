@@ -2,6 +2,7 @@
 from django.http import JsonResponse
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
+from django.conf.global_settings import MEDIA_ROOT
 import re,json
 
 from reportlab.pdfbase.ttfonts import TTFont
@@ -1123,7 +1124,7 @@ def information(request):
             house_id = querylist.get('house_id')
             name = "租客"+user_id+"房屋"+house_id+"房屋租赁合同.pdf"
             pdf = canvas.Canvas(name)
-            pdfmetrics.registerFont(TTFont('song','C:/Windows/Fonts/simfang.ttf'))
+            pdfmetrics.registerFont(TTFont('song',MEDIA_ROOT+'simsun.ttc'))
             pdf.setFont('song', 10)
             pdf.drawString(300, 700, "房屋租赁合同")
             pdf.drawString(100, 650, "甲方：" + landlordname)
