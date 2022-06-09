@@ -297,7 +297,6 @@ def order(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id,Pay=False)
-            #如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
@@ -360,32 +359,58 @@ def order(request):
                 })
             return JsonResponse({'houselist': houselist})
         elif function_id == '5': #正在处理
-            order = Order.objects.filter(UserID=user_id,Pay=False)
+            order = Order.objects.filter(UserID=user_id)
             orderlist = []
             for x in order:
-                y = House.objects.get(HouseID=x.HouseID)
-                orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
-                    'OrderID': x.OrderID,
-                    'HouseID': x.HouseID,
-                    'LandlordName': y.LandlordName,
-                    'LandlordPhone': y.LandlordPhone,
-                    'Address': y.Address
+                if Contract.objects.filter(OrderID=x.OrderID).exists()==False :
+                    y = House.objects.get(HouseID=x.HouseID)
+                    orderlist.append({
+                        'OrderDate': x.OrderDate.date(),
+                        'OrderID': x.OrderID,
+                        'HouseID': x.HouseID,
+                        'LandlordName': y.LandlordName,
+                        'LandlordPhone': y.LandlordPhone,
+                        'Address': y.Address
                 })
+                else:
+                    contract = Contract.objects.get(OrderID=x.OrderID)
+                    if contract.Passed == False:
+                        y = House.objects.get(HouseID=x.HouseID)
+                        orderlist.append({
+                            'OrderDate': x.OrderDate.date(),
+                            'OrderID': x.OrderID,
+                            'HouseID': x.HouseID,
+                            'LandlordName': y.LandlordName,
+                            'LandlordPhone': y.LandlordPhone,
+                            'Address': y.Address
+                        })
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '6': #历史记录
-            order = Order.objects.filter(UserID=user_id,Pay=True)
+            order = Order.objects.filter(UserID=user_id)
             orderlist = []
             for x in order:
-                y = House.objects.get(HouseID=x.HouseID)
-                orderlist.append({
-                    'OrderDate': x.OrderDate.date(),
-                    'OrderID': x.OrderID,
-                    'HouseID': x.HouseID,
-                    'LandlordName': y.LandlordName,
-                    'LandlordPhone': y.LandlordPhone,
-                    'Address': y.Address
+                if Contract.objects.filter(OrderID=x.OrderID).exists() == None:
+                    y = House.objects.get(HouseID=x.HouseID)
+                    orderlist.append({
+                        'OrderDate': x.OrderDate.date(),
+                        'OrderID': x.OrderID,
+                        'HouseID': x.HouseID,
+                        'LandlordName': y.LandlordName,
+                        'LandlordPhone': y.LandlordPhone,
+                        'Address': y.Address
                 })
+                else:
+                    contract = Contract.objects.get(OrderID=x.OrderID)
+                    if contract.Passed == True:
+                        y = House.objects.get(HouseID=x.HouseID)
+                        orderlist.append({
+                            'OrderDate': x.OrderDate.date(),
+                            'OrderID': x.OrderID,
+                            'HouseID': x.HouseID,
+                            'LandlordName': y.LandlordName,
+                            'LandlordPhone': y.LandlordPhone,
+                            'Address': y.Address
+                        })
             return JsonResponse({'orderlist': orderlist})
         elif function_id == '7': #订单详情
             order_id = querylist.get('order_id')
@@ -492,7 +517,6 @@ def service(request):
         if function_id == '0':  # 我的订单
             orderlist = []
             order = Order.objects.filter(UserID=user_id, Pay=False)
-            # 如果用户没有订单?
             for x in order:
                 y = House.objects.get(HouseID=x.HouseID)
                 orderlist.append({
@@ -558,7 +582,7 @@ def service(request):
             order = Order.objects.filter(UserID=user_id, Pay=True)
             orderlist = []
             for x in order:
-                contract = Contract.objects.get(OrderID=order.OrderID)
+                contract = Contract.objects.get(OrderID=x.OrderID)
                 if contract.Passed == True:
                     y = House.objects.get(HouseID=x.HouseID)
                     orderlist.append({
