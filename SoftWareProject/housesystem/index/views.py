@@ -697,7 +697,7 @@ def service(request):
             picture = request.FILES.get('picture')
             suffix = '.' + picture.name.split('.')[-1]
             picture.name = str(order_id)+'报修投诉'+suffix
-            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture)
+            new_work = Work(Datetime=now, HouseID=house_id, Description=description, UserID=user_id,OrderID=order_id,Picture=picture,Status = False)
             new_work.save()
             new_work.Picture_url = "http://127.0.0.1:8000/media/" + new_work.Picture.name
             print(new_work.Picture.name)

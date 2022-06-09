@@ -322,6 +322,7 @@ def worker_index(request):
                 'Phone': y.Phone,
                 'Address': z.Address,
                 'Description': x.Description,
+                'picture':x.Picture_url,
                 'Comment': x.Comment
             })
         return JsonResponse({'worklist':worklist})
