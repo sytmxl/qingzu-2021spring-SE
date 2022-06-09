@@ -213,7 +213,7 @@ def search(request): #我要租房
                 return JsonResponse({'errornumber': 1, 'message': "成功登录并收藏！"})#未成功登录的情况暂时由前端处理
         elif function_id == '7': #房源搜索
             house_name = querylist.get('house_name')
-            houses = House.objects.filter(Housename__contains=house_name,Status=False)
+            houses = House.objects.filter(Housename__contains=house_name)
             # return JsonResponse(list(response), safe=False, json_dumps_params={'ensure_ascii': False})
             houselist = []
             for house in houses:
@@ -233,18 +233,15 @@ def search(request): #我要租房
             city = querylist.get('city')
             type = querylist.get('type')
             rent = querylist.get('rent')
-
-            houses = House.objects.filter(Status=False)
-
-            print(city)
-            if city != 'undefined/undefined/undefined':
+            houses = House.objects.filter()
+            if (city != 'undefined/undefined/undefined')and(city!='无/undefined/undefined'):
                 lay = city.split('/')
                 if lay[1] == '市辖区':
                     city = lay[0][:-1] + lay[2][:-1]
                 else:
                     city = lay[1][:-1] + lay[2][:-1]
                 houses = houses.filter(Address=city)
-            if type != '':
+            if (type != '')and(type !='无'):
                 houses = houses.filter(Housetype=type)
 
             if rent == '1':
