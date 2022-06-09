@@ -24,9 +24,9 @@ def Register(request):
             password_2 = querylist.get('password_2')
             #phone = querylist.get('phone')
             email = querylist.get('email')
-            if(re.match("^[A-Za-z0-9]+$",username)==None): # 任意长度的字符和数字组合
-                return JsonResponse({'errornumber': 2, 'message': "用户名格式错误:只能输入字母和数字的组合"})
-            elif(User.objects.filter(Username=username).exists() or User.objects.filter(Email=email).exists()):
+            #if(re.match("^[A-Za-z0-9]+$",username)==None): # 任意长度的字符和数字组合
+            #    return JsonResponse({'errornumber': 2, 'message': "用户名格式错误:只能输入字母和数字的组合"})
+            if(User.objects.filter(Username=username).exists() or User.objects.filter(Email=email).exists()):
                 return JsonResponse({'errornumber': 3, 'message': "用户名或邮箱已存在"})
             elif(re.match("^[A-Za-z0-9]+$",password_1)==None): # 任意长度的字符和数字组合
                 return JsonResponse({'errornumber': 4, 'message': "密码格式错误：只能输入字母和数字的组合"})
