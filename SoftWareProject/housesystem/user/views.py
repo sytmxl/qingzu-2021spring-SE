@@ -939,6 +939,9 @@ def Manage_Complain(request):
             try:
                 print('多个数据')
                 for worker_id in worker_id_list:
+                    work = Work.objects.get(WorkID=work_id)
+                    work.WorkerID = worker_id
+                    work.save()
                     worker = User.objects.get(UserID=int(worker_id))
                     worker.WorkID = work_id
                     worker.save()
@@ -947,6 +950,9 @@ def Manage_Complain(request):
                 worker = User.objects.get(UserID=int(worker_id_list))
                 worker.WorkID = work_id
                 worker.save()
+                work = Work.objects.get(WorkID=work_id)
+                work.WorkerID = worker.UserID
+                work.save()
             return JsonResponse({'errornumber': 0, 'message': "分配师傅成功"})
         elif function_id == '12':  # 提交留言
             work_id = querylist.get('work_id')
