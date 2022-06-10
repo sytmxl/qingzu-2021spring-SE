@@ -143,7 +143,7 @@ def user(request):
             avatar.name = str(user_id)+'头像'+suffix
             user.avatar= avatar
             user.save()
-            user.avatar_url = "http://43.138.67.29:8090/media/" + user.avatar.name
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
             user.save()
             return JsonResponse({'avatar_url': user.avatar_url})
     else:
@@ -162,7 +162,7 @@ def RepairMan_SelfInfo(request):
             avatar.name = str(user_id)+'头像'+suffix
             user.avatar= avatar
             user.save()
-            user.avatar_url = "http://43.138.67.29:8090/media/" + user.avatar.name
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
             user.save()
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功",'avatar_url':user.avatar_url})
         elif function_id == '5': #修改电话
@@ -359,7 +359,7 @@ def Commander_FirstPage(request):
             avatar.name = str(user_id) + '头像' + suffix
             user.avatar = avatar
             user.save()
-            user.avatar_url = "http://43.138.67.29:8090/media/" + user.avatar.name
+            user.avatar_url = "http://127.0.0.1:8000/media/" + user.avatar.name
             user.save()
             return JsonResponse({'errornumber': 0, 'message': "头像更改成功", 'avatar_url': user.avatar_url})
         elif function_id == '10': # 修改电话
@@ -577,7 +577,7 @@ def Manage_House(request):
                         continue
                     suffix = '.' + pic.name.split('.')[-1]
                     pic.name = "房源" + str(id) + "图片" + str(i) + suffix
-                    url = "http://43.138.67.29:8090/media/" + pic.name
+                    url = "http://127.0.0.1:8000/media/" + pic.name
                     pic = Picture(PicPath=url, HouseID=id, Pic=pic)
                     pic.save()
                     i += 1
@@ -597,7 +597,7 @@ def Manage_House(request):
                         continue
                     suffix = '.' + pic.name.split('.')[-1]
                     pic.name = "房源" + str(id) + "图片" + str(i) + suffix
-                    url = "http://43.138.67.29:8090/media/" + pic.name
+                    url = "http://127.0.0.1:8000/media/" + pic.name
                     pic = Picture(PicPath=url, HouseID=id, Pic=pic)
                     pic.save()
                     i += 1

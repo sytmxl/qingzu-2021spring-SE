@@ -159,13 +159,14 @@ if __name__ == '__main__':
 
     day = 60*60*24  # 一天一次
     everyday(time=day)
-    '''ip = '43.138.67.29:8090'
+    # ip = '43.138.67.29:8090'
+    ip = '127.0.0.1:8000'
     pics = Picture.objects.all()
     for pic in pics:
         string = pic.PicPath.split('/')
         pic.PicPath = string[0] + '/' + string[1] + '/' + ip + '/' + string[3] + '/' + string[4]
         print(pic.PicPath)
-        pic.save()'''
+        pic.save()
 
 
 
